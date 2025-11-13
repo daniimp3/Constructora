@@ -7,8 +7,23 @@
     <title>Dashboard - Administrador</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Librerías para exportar -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    
     <style>
+        :root {
+            --primary: #0d273d;
+            --secondary: #3e6985;
+            --accent: #8aa7bc;
+            --light: #a6bed1;
+            --lighter: #cdd7df;
+        }
+        
         * { font-family: 'Poppins', sans-serif; }
         body { background: #f0f4f8; }
         
@@ -18,10 +33,38 @@
             top: 0;
             width: 280px;
             height: 100vh;
-            background: linear-gradient(180deg, #0d273d 0%, #1a3a52 100%);
+            background: linear-gradient(180deg, var(--primary) 0%, var(--secondary) 100%);
             z-index: 1000;
             box-shadow: 4px 0 20px rgba(0,0,0,0.15);
             overflow-y: auto;
+        }
+        
+        /* Logo Container */
+        .logo-container {
+            padding: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            background: rgba(0,0,0,0.2);
+        }
+        
+        .company-logo {
+            max-width: 80px;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+        }
+        
+        .company-name {
+            color: white;
+            text-align: center;
+            margin-top: 10px;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        .company-subtitle {
+            color: rgba(255,255,255,0.7);
+            text-align: center;
+            font-size: 0.85rem;
         }
         
         .sidebar .nav-link {
@@ -36,6 +79,7 @@
         .sidebar .nav-link.active {
             background: rgba(255,255,255,0.1);
             color: white;
+            transform: translateX(5px);
         }
         
         .main-content {
@@ -60,13 +104,13 @@
         .stat-card.purple { border-color: #8b5cf6; }
         
         .btn-primary-custom {
-            background: linear-gradient(135deg, #3e6985, #5a8caf);
+            background: linear-gradient(135deg, var(--secondary), #5a8caf);
             border: none;
             color: white;
         }
         
         .btn-primary-custom:hover {
-            background: linear-gradient(135deg, #2d5166, #3e6985);
+            background: linear-gradient(135deg, #2d5166, var(--secondary));
             color: white;
         }
         
@@ -144,6 +188,28 @@
             border-left-color: #d1d5db;
             opacity: 0.7;
         }
+
+        .progress {
+            height: 10px;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .modal-content {
+            border-radius: 15px;
+            border: none;
+        }
+
+        .modal-header {
+            background: var(--secondary);
+            color: white;
+            border-radius: 15px 15px 0 0;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 0.2rem rgba(62, 105, 133, 0.25);
+        }
         
         @media (max-width: 768px) {
             .sidebar { transform: translateX(-280px); }
@@ -152,12 +218,16 @@
     </style>
 </head>
 <body>
-    <!-- Sidebar -->
+    
     <div class="sidebar">
-        <div class="p-4 border-bottom border-secondary">
-            <h4 class="text-white mb-1">🏗️ Constructora</h4>
-            <small class="text-white-50">Panel de Administración</small>
+        
+        <div class="logo-container">
+            
+            <img src="{{ asset('img/logo.png') }}" alt="Logo Empresa" class="company-logo">
+            
+            <p class="company-subtitle mb-0">Panel de Administración</p>
         </div>
+        
         
         <div class="bg-dark bg-opacity-25 m-3 p-3 rounded">
             <div class="d-flex align-items-center">
@@ -172,6 +242,7 @@
             </div>
         </div>
         
+        <!-- Navigation -->
         <ul class="nav flex-column px-3 mt-3">
             <li class="nav-item">
                 <a class="nav-link active" href="#" onclick="showSection('overview');return false">
@@ -222,11 +293,12 @@
                         <p class="text-muted mb-0">Monitoreo integral de proyectos</p>
                     </div>
                     <button class="btn btn-primary-custom" onclick="showSection('projects')">
-                        <i class="bi bi-building me-2"></i>Gestionar
+                        <i class="bi bi-building me-2"></i>Gestionar Proyectos
                     </button>
                 </div>
             </div>
             
+            <!-- Stats Cards -->
             <div class="row g-3 mb-4">
                 <div class="col-md-3">
                     <div class="card stat-card blue shadow-sm h-100" onclick="showSection('projects')">
@@ -234,7 +306,7 @@
                             <div class="d-flex justify-content-between align-items-start mb-2">
                                 <div>
                                     <h3 class="mb-0 fw-bold" id="totalProjects">0</h3>
-                                    <small class="text-muted">Proyectos</small>
+                                    <small class="text-muted">Proyectos Totales</small>
                                 </div>
                                 <div class="bg-primary bg-opacity-10 rounded p-2">
                                     <i class="bi bi-building fs-4 text-primary"></i>
@@ -250,7 +322,7 @@
                             <div class="d-flex justify-content-between align-items-start mb-2">
                                 <div>
                                     <h3 class="mb-0 fw-bold" id="activeProjects">0</h3>
-                                    <small class="text-muted">Activos</small>
+                                    <small class="text-muted">Proyectos Activos</small>
                                 </div>
                                 <div class="bg-success bg-opacity-10 rounded p-2">
                                     <i class="bi bi-lightning fs-4 text-success"></i>
@@ -266,7 +338,7 @@
                             <div class="d-flex justify-content-between align-items-start mb-2">
                                 <div>
                                     <h3 class="mb-0 fw-bold" id="totalBudget">$0</h3>
-                                    <small class="text-muted">Presupuesto</small>
+                                    <small class="text-muted">Presupuesto Total</small>
                                 </div>
                                 <div class="bg-warning bg-opacity-10 rounded p-2">
                                     <i class="bi bi-cash fs-4 text-warning"></i>
@@ -282,7 +354,7 @@
                             <div class="d-flex justify-content-between align-items-start mb-2">
                                 <div>
                                     <h3 class="mb-0 fw-bold" id="totalWorkers">0</h3>
-                                    <small class="text-muted">Trabajadores</small>
+                                    <small class="text-muted">Personal Total</small>
                                 </div>
                                 <div class="bg-info bg-opacity-10 rounded p-2">
                                     <i class="bi bi-people fs-4 text-info"></i>
@@ -293,13 +365,17 @@
                 </div>
             </div>
             
+            <!-- Recent Projects Card -->
             <div class="card shadow-sm d-none" id="recentProjectsCard">
-                <div class="card-header bg-white">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">Proyectos Recientes</h5>
+                    <button class="btn btn-sm btn-outline-secondary" onclick="showSection('projects')">
+                        Ver todos
+                    </button>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table table-hover">
+                        <table class="table table-hover mb-0">
                             <thead>
                                 <tr>
                                     <th>Proyecto</th>
@@ -315,13 +391,14 @@
                 </div>
             </div>
             
+            <!-- Empty State -->
             <div class="card shadow-sm text-center" id="emptyOverview">
                 <div class="card-body py-5">
                     <i class="bi bi-building display-1 text-muted mb-3"></i>
-                    <h3>Primer Proyecto</h3>
-                    <p class="text-muted">Crea tu primer proyecto</p>
+                    <h3>Bienvenido al Sistema</h3>
+                    <p class="text-muted">Comienza creando tu primer proyecto</p>
                     <button class="btn btn-primary-custom mt-3" onclick="showSection('projects')">
-                        <i class="bi bi-plus-circle me-2"></i>Crear
+                        <i class="bi bi-plus-circle me-2"></i>Crear Proyecto
                     </button>
                 </div>
             </div>
@@ -332,32 +409,35 @@
             <div class="card shadow-sm mb-4">
                 <div class="card-body d-flex justify-content-between align-items-center flex-wrap">
                     <div>
-                        <h2 class="mb-1">Proyectos</h2>
-                        <p class="text-muted mb-0">Gestiona tus proyectos</p>
+                        <h2 class="mb-1">Gestión de Proyectos</h2>
+                        <p class="text-muted mb-0">Administra todos tus proyectos de construcción</p>
                     </div>
                     <button class="btn btn-primary-custom" data-bs-toggle="modal" data-bs-target="#modalProject" onclick="openCreateProjectModal()">
-                        <i class="bi bi-plus-circle me-2"></i>Nuevo
+                        <i class="bi bi-plus-circle me-2"></i>Nuevo Proyecto
                     </button>
                 </div>
             </div>
             
+            <!-- Projects List Card -->
             <div class="card shadow-sm d-none" id="projectsListCard">
                 <div class="card-body">
+                    <!-- Filters -->
                     <div class="row g-3 mb-3">
                         <div class="col-md-6">
-                            <input type="text" class="form-control" id="searchProject" placeholder="Buscar..." onkeyup="filterProjects()">
+                            <input type="text" class="form-control" id="searchProject" placeholder="🔍 Buscar proyecto..." onkeyup="filterProjects()">
                         </div>
                         <div class="col-md-6">
                             <select class="form-select" id="filterStatus" onchange="filterProjects()">
-                                <option value="">Todos</option>
+                                <option value="">Todos los estados</option>
                                 <option value="active">Activos</option>
                                 <option value="paused">Pausados</option>
-                                <option value="completed">Terminados</option>
+                                <option value="completed">Completados</option>
                             </select>
                         </div>
                     </div>
+                    <!-- Table -->
                     <div class="table-responsive">
-                        <table class="table table-hover">
+                        <table class="table table-hover mb-0">
                             <thead>
                                 <tr>
                                     <th>Proyecto</th>
@@ -365,7 +445,7 @@
                                     <th>Estado</th>
                                     <th>Avance</th>
                                     <th>Presupuesto</th>
-                                    <th>Acciones</th>
+                                    <th class="text-center">Acciones</th>
                                 </tr>
                             </thead>
                             <tbody id="projectsTable"></tbody>
@@ -374,13 +454,14 @@
                 </div>
             </div>
             
+            <!-- Empty Projects State -->
             <div class="card shadow-sm text-center" id="emptyProjects">
                 <div class="card-body py-5">
                     <i class="bi bi-folder display-1 text-muted mb-3"></i>
-                    <h3>Sin Proyectos</h3>
-                    <p class="text-muted">Registra tu primer proyecto</p>
+                    <h3>Sin Proyectos Registrados</h3>
+                    <p class="text-muted">Crea tu primer proyecto para comenzar</p>
                     <button class="btn btn-primary-custom mt-3" data-bs-toggle="modal" data-bs-target="#modalProject" onclick="openCreateProjectModal()">
-                        <i class="bi bi-plus-circle me-2"></i>Registrar
+                        <i class="bi bi-plus-circle me-2"></i>Crear Proyecto
                     </button>
                 </div>
             </div>
@@ -391,8 +472,8 @@
             <div class="card shadow-sm mb-4">
                 <div class="card-body d-flex justify-content-between align-items-center flex-wrap">
                     <div>
-                        <h2 class="mb-1">Personal</h2>
-                        <p class="text-muted mb-0">Gestiona tu equipo de trabajo</p>
+                        <h2 class="mb-1">Gestión de Personal</h2>
+                        <p class="text-muted mb-0">Administra tu equipo de trabajo</p>
                     </div>
                     <button class="btn btn-primary-custom" data-bs-toggle="modal" data-bs-target="#modalWorker" onclick="openCreateWorkerModal()">
                         <i class="bi bi-person-plus me-2"></i>Agregar Personal
@@ -400,11 +481,13 @@
                 </div>
             </div>
             
+            <!-- Workers List Card -->
             <div class="card shadow-sm d-none" id="workersListCard">
                 <div class="card-body">
+                    <!-- Filters -->
                     <div class="row g-3 mb-3">
                         <div class="col-md-6">
-                            <input type="text" class="form-control" id="searchWorker" placeholder="Buscar trabajador..." onkeyup="filterWorkers()">
+                            <input type="text" class="form-control" id="searchWorker" placeholder="🔍 Buscar trabajador..." onkeyup="filterWorkers()">
                         </div>
                         <div class="col-md-6">
                             <select class="form-select" id="filterRole" onchange="filterWorkers()">
@@ -414,8 +497,9 @@
                             </select>
                         </div>
                     </div>
+                    <!-- Table -->
                     <div class="table-responsive">
-                        <table class="table table-hover">
+                        <table class="table table-hover mb-0">
                             <thead>
                                 <tr>
                                     <th>Nombre</th>
@@ -423,7 +507,7 @@
                                     <th>Rol</th>
                                     <th>Proyecto Asignado</th>
                                     <th>Teléfono</th>
-                                    <th>Acciones</th>
+                                    <th class="text-center">Acciones</th>
                                 </tr>
                             </thead>
                             <tbody id="workersTable"></tbody>
@@ -432,13 +516,14 @@
                 </div>
             </div>
             
+            <!-- Empty Workers State -->
             <div class="card shadow-sm text-center" id="emptyWorkers">
                 <div class="card-body py-5">
                     <i class="bi bi-people display-1 text-muted mb-3"></i>
-                    <h3>Sin Personal</h3>
-                    <p class="text-muted">Agrega a tu primer trabajador</p>
+                    <h3>Sin Personal Registrado</h3>
+                    <p class="text-muted">Agrega a tu primer trabajador para comenzar</p>
                     <button class="btn btn-primary-custom mt-3" data-bs-toggle="modal" data-bs-target="#modalWorker" onclick="openCreateWorkerModal()">
-                        <i class="bi bi-person-plus me-2"></i>Agregar
+                        <i class="bi bi-person-plus me-2"></i>Agregar Personal
                     </button>
                 </div>
             </div>
@@ -453,44 +538,64 @@
                 </div>
             </div>
             
+            <!-- Report Options -->
             <div class="row g-3 mb-4">
                 <div class="col-md-6">
-                    <div class="card shadow-sm">
+                    <div class="card shadow-sm h-100">
                         <div class="card-body">
-                            <h5 class="card-title">
-                                <i class="bi bi-bar-chart-fill me-2 text-primary"></i>
-                                Reporte de Gastos vs Presupuesto
-                            </h5>
-                            <p class="card-text text-muted">Analiza desviaciones en el presupuesto de cada proyecto</p>
-                            <button class="btn btn-primary-custom" onclick="generateBudgetReport()">
-                                <i class="bi bi-file-earmark-pdf me-2"></i>Ver Reporte
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="bg-primary bg-opacity-10 rounded p-3 me-3">
+                                    <i class="bi bi-bar-chart-fill fs-3 text-primary"></i>
+                                </div>
+                                <div>
+                                    <h5 class="mb-0">Análisis de Presupuesto</h5>
+                                    <small class="text-muted">Gastos vs Presupuesto</small>
+                                </div>
+                            </div>
+                            <p class="card-text text-muted">Analiza las desviaciones en el presupuesto de cada proyecto</p>
+                            <button class="btn btn-primary-custom w-100" onclick="generateBudgetReport()">
+                                <i class="bi bi-file-earmark-bar-graph me-2"></i>Generar Reporte
                             </button>
                         </div>
                     </div>
                 </div>
                 
                 <div class="col-md-6">
-                    <div class="card shadow-sm">
+                    <div class="card shadow-sm h-100">
                         <div class="card-body">
-                            <h5 class="card-title">
-                                <i class="bi bi-graph-up me-2 text-success"></i>
-                                Comparación de Proyectos
-                            </h5>
-                            <p class="card-text text-muted">Identifica retrasos y compara avances</p>
-                            <button class="btn btn-primary-custom" onclick="showSection('compare')">
-                                <i class="bi bi-eye me-2"></i>Comparar
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="bg-success bg-opacity-10 rounded p-3 me-3">
+                                    <i class="bi bi-graph-up fs-3 text-success"></i>
+                                </div>
+                                <div>
+                                    <h5 class="mb-0">Comparación de Proyectos</h5>
+                                    <small class="text-muted">Avances y retrasos</small>
+                                </div>
+                            </div>
+                            <p class="card-text text-muted">Identifica retrasos y compara el avance entre proyectos</p>
+                            <button class="btn btn-primary-custom w-100" onclick="showSection('compare')">
+                                <i class="bi bi-eye me-2"></i>Ver Comparación
                             </button>
                         </div>
                     </div>
                 </div>
             </div>
             
+            <!-- Budget Report Section -->
             <div id="budgetReportSection" class="card shadow-sm d-none">
                 <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">Análisis de Presupuesto por Proyecto</h5>
-                    <button class="btn btn-sm btn-outline-secondary" onclick="exportReportToPDF()">
-                        <i class="bi bi-file-earmark-pdf me-1"></i>Exportar PDF
-                    </button>
+                    <h5 class="mb-0">
+                        <i class="bi bi-bar-chart-fill me-2"></i>
+                        Análisis de Presupuesto por Proyecto
+                    </h5>
+                    <div class="btn-group">
+                        <button class="btn btn-sm btn-outline-danger" onclick="exportReportToPDF()">
+                            <i class="bi bi-file-earmark-pdf me-1"></i>PDF
+                        </button>
+                        <button class="btn btn-sm btn-outline-success" onclick="exportReportToExcel()">
+                            <i class="bi bi-file-earmark-excel me-1"></i>Excel
+                        </button>
+                    </div>
                 </div>
                 <div class="card-body">
                     <div id="budgetReportContent"></div>
@@ -504,10 +609,10 @@
                 <div class="card-body d-flex justify-content-between align-items-center">
                     <div>
                         <h2 class="mb-1">Comparación de Proyectos</h2>
-                        <p class="text-muted mb-0">Identifica retrasos y analiza avances</p>
+                        <p class="text-muted mb-0">Analiza el progreso y detecta retrasos</p>
                     </div>
                     <button class="btn btn-outline-secondary" onclick="showSection('reports')">
-                        <i class="bi bi-arrow-left me-2"></i>Volver
+                        <i class="bi bi-arrow-left me-2"></i>Volver a Reportes
                     </button>
                 </div>
             </div>
@@ -515,7 +620,10 @@
             <div class="card shadow-sm">
                 <div class="card-body">
                     <div id="compareContent">
-                        <p class="text-muted text-center">Selecciona al menos 2 proyectos activos para comparar</p>
+                        <div class="text-center py-5">
+                            <i class="bi bi-graph-up display-1 text-muted mb-3"></i>
+                            <p class="text-muted">Selecciona al menos 2 proyectos activos para comparar</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -526,8 +634,8 @@
             <div class="card shadow-sm mb-4">
                 <div class="card-body d-flex justify-content-between align-items-center flex-wrap">
                     <div>
-                        <h2 class="mb-1">Notificaciones</h2>
-                        <p class="text-muted mb-0">Reportes y alertas del equipo</p>
+                        <h2 class="mb-1">Centro de Notificaciones</h2>
+                        <p class="text-muted mb-0">Reportes de problemas y alertas del sistema</p>
                     </div>
                     <button class="btn btn-outline-secondary" onclick="markAllAsRead()">
                         <i class="bi bi-check-all me-2"></i>Marcar todas como leídas
@@ -535,34 +643,39 @@
                 </div>
             </div>
             
+            <!-- Notifications List -->
             <div class="card shadow-sm d-none" id="notificationsListCard">
                 <div class="card-body" id="notificationsList"></div>
             </div>
             
+            <!-- Empty Notifications State -->
             <div class="card shadow-sm text-center" id="emptyNotifications">
                 <div class="card-body py-5">
                     <i class="bi bi-bell-slash display-1 text-muted mb-3"></i>
                     <h3>Sin Notificaciones</h3>
-                    <p class="text-muted">No hay reportes pendientes</p>
+                    <p class="text-muted">No hay alertas o reportes pendientes en este momento</p>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Modales -->
+    <!-- MODALES -->
+    
     <!-- Modal de Proyecto -->
     <div class="modal fade" id="modalProject" tabindex="-1">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="modalProjectTitle">Nuevo Proyecto</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <h5 class="modal-title" id="modalProjectTitle">
+                        <i class="bi bi-building me-2"></i>Nuevo Proyecto
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <form id="projectForm" onsubmit="saveProject(event)">
                     <div class="modal-body">
                         <div class="row g-3">
                             <div class="col-md-6">
-                                <label class="form-label">Nombre *</label>
+                                <label class="form-label">Nombre del Proyecto *</label>
                                 <input type="text" class="form-control" id="projectName" required>
                             </div>
                             <div class="col-md-6">
@@ -570,7 +683,7 @@
                                 <input type="text" class="form-control" id="projectClient" required>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label">Fecha Inicio *</label>
+                                <label class="form-label">Fecha de Inicio *</label>
                                 <input type="date" class="form-control" id="projectStartDate" required>
                             </div>
                             <div class="col-md-6">
@@ -578,24 +691,30 @@
                                 <select class="form-select" id="projectStatus">
                                     <option value="active">Activo</option>
                                     <option value="paused">Pausado</option>
-                                    <option value="completed">Terminado</option>
+                                    <option value="completed">Completado</option>
                                 </select>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Avance (%)</label>
                                 <input type="number" class="form-control" id="projectProgress" min="0" max="100" value="0">
                             </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Presupuesto Inicial</label>
+                                <input type="number" class="form-control" id="projectBudgetInitial" step="0.01" value="0" placeholder="0.00">
+                            </div>
                             <div class="col-12">
                                 <label class="form-label">Descripción</label>
-                                <textarea class="form-control" id="projectDescription" rows="2"></textarea>
+                                <textarea class="form-control" id="projectDescription" rows="3" placeholder="Descripción opcional del proyecto..."></textarea>
                             </div>
                         </div>
                         <input type="hidden" id="projectId">
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            <i class="bi bi-x-circle me-2"></i>Cancelar
+                        </button>
                         <button type="submit" class="btn btn-primary-custom">
-                            <i class="bi bi-save me-2"></i>Guardar
+                            <i class="bi bi-save me-2"></i>Guardar Proyecto
                         </button>
                     </div>
                 </form>
@@ -608,22 +727,32 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Presupuesto</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <h5 class="modal-title">
+                        <i class="bi bi-cash-stack me-2"></i>Gestión de Presupuesto
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <form id="budgetForm" onsubmit="saveBudget(event)">
                     <div class="modal-body">
                         <div class="mb-3">
                             <label class="form-label">Presupuesto Total *</label>
-                            <input type="number" class="form-control" id="budgetTotal" step="0.01" required>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="number" class="form-control" id="budgetTotal" step="0.01" required>
+                            </div>
                         </div>
+                        <hr>
+                        <h6 class="mb-3">Registrar Nuevo Gasto</h6>
                         <div class="mb-3">
-                            <label class="form-label">Registrar Gasto</label>
-                            <input type="number" class="form-control" id="budgetExpense" step="0.01" placeholder="0.00">
+                            <label class="form-label">Monto del Gasto</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="number" class="form-control" id="budgetExpense" step="0.01" placeholder="0.00">
+                            </div>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Descripción del Gasto</label>
-                            <input type="text" class="form-control" id="expenseDescription" placeholder="Ej: Materiales de construcción">
+                            <input type="text" class="form-control" id="expenseDescription" placeholder="Ej: Materiales de construcción, Mano de obra...">
                         </div>
                         <input type="hidden" id="budgetProjectId">
                     </div>
@@ -643,14 +772,16 @@
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Detalles del Proyecto</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <h5 class="modal-title">
+                        <i class="bi bi-eye me-2"></i>Detalles del Proyecto
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body" id="projectDetails"></div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
                     <button type="button" class="btn btn-primary-custom" onclick="editCurrentProject()">
-                        <i class="bi bi-pencil me-2"></i>Editar
+                        <i class="bi bi-pencil me-2"></i>Editar Proyecto
                     </button>
                 </div>
             </div>
@@ -662,8 +793,10 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="modalWorkerTitle">Agregar Personal</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <h5 class="modal-title" id="modalWorkerTitle">
+                        <i class="bi bi-person-plus me-2"></i>Agregar Personal
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <form id="workerForm" onsubmit="saveWorker(event)">
                     <div class="modal-body">
@@ -708,7 +841,7 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                         <button type="submit" class="btn btn-primary-custom">
-                            <i class="bi bi-save me-2"></i>Guardar
+                            <i class="bi bi-save me-2"></i>Guardar Personal
                         </button>
                     </div>
                 </form>
@@ -754,6 +887,9 @@ document.addEventListener('DOMContentLoaded', () => {
     loadNotifications();
     updateUI();
     updateNotificationBadge();
+    
+    // Verificar notificaciones cada 30 segundos
+    setInterval(updateNotificationBadge, 30000);
 });
 
 // ============== FUNCIONES DE CARGA Y GUARDADO ==============
@@ -790,16 +926,23 @@ function showSection(id) {
     document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
     document.getElementById(id).classList.remove('d-none');
     
-    if (event && event.target) {
-        const link = event.target.closest('.nav-link');
-        if (link) link.classList.add('active');
-    }
+    const links = document.querySelectorAll('.nav-link');
+    links.forEach(link => {
+        if (link.getAttribute('onclick') && link.getAttribute('onclick').includes(`'${id}'`)) {
+            link.classList.add('active');
+        }
+    });
     
-    // Actualizar contenido según la sección
     if (id === 'notifications') {
         updateNotificationsList();
     } else if (id === 'compare') {
         showProjectComparison();
+    } else if (id === 'overview') {
+        updateOverview();
+    } else if (id === 'projects') {
+        updateProjectsList();
+    } else if (id === 'workers') {
+        updateWorkersList();
     }
 }
 
@@ -815,12 +958,12 @@ function updateUI() {
 function updateStats() {
     const totalProj = projects.length;
     const activeProj = projects.filter(p => p.status === 'active').length;
-    const totalBudg = projects.reduce((sum, p) => sum + (p.budget || 0), 0);
+    const totalBudg = projects.reduce((sum, p) => sum + (parseFloat(p.budget) || 0), 0);
     const totalWork = workers.length;
     
     document.getElementById('totalProjects').textContent = totalProj;
     document.getElementById('activeProjects').textContent = activeProj;
-    document.getElementById('totalBudget').textContent = '$' + totalBudg.toLocaleString();
+    document.getElementById('totalBudget').textContent = '$' + totalBudg.toLocaleString('es-MX', {minimumFractionDigits: 2});
     document.getElementById('totalWorkers').textContent = totalWork;
 }
 
@@ -834,7 +977,9 @@ function updateOverview() {
         
         const tbody = document.getElementById('recentProjectsTable');
         tbody.innerHTML = '';
-        projects.slice(0, 5).forEach(p => tbody.appendChild(createRowSimple(p)));
+        
+        const recentProjects = [...projects].reverse().slice(0, 5);
+        recentProjects.forEach(p => tbody.appendChild(createRowSimple(p)));
     }
 }
 
@@ -880,18 +1025,21 @@ function createRowSimple(p) {
     row.onclick = () => viewProject(p.id);
     
     const badge = getStatusBadge(p.status);
+    const budgetDisplay = p.budget ? `$${parseFloat(p.budget).toLocaleString('es-MX')}` : '$0';
     
     row.innerHTML = `
         <td><strong>${p.name}</strong></td>
         <td>${p.client}</td>
         <td>${badge}</td>
         <td>
-            <div>${p.progress}%</div>
-            <div class="progress mt-1" style="height:6px">
-                <div class="progress-bar" style="width:${p.progress}%"></div>
+            <div class="d-flex align-items-center">
+                <span class="me-2">${p.progress}%</span>
+                <div class="progress flex-grow-1" style="height:8px; min-width:80px;">
+                    <div class="progress-bar" style="width:${p.progress}%"></div>
+                </div>
             </div>
         </td>
-        <td>$${(p.budget || 0).toLocaleString()}</td>
+        <td>${budgetDisplay}</td>
     `;
     
     return row;
@@ -903,23 +1051,26 @@ function createRowFull(p) {
     row.onclick = () => viewProject(p.id);
     
     const badge = getStatusBadge(p.status);
+    const budgetDisplay = p.budget ? `$${parseFloat(p.budget).toLocaleString('es-MX')}` : '$0';
     
     row.innerHTML = `
         <td><strong>${p.name}</strong></td>
         <td>${p.client}</td>
         <td>${badge}</td>
         <td>
-            <div>${p.progress}%</div>
-            <div class="progress mt-1" style="height:6px">
-                <div class="progress-bar" style="width:${p.progress}%"></div>
+            <div class="d-flex align-items-center">
+                <span class="me-2">${p.progress}%</span>
+                <div class="progress flex-grow-1" style="height:8px; min-width:80px;">
+                    <div class="progress-bar" style="width:${p.progress}%"></div>
+                </div>
             </div>
         </td>
-        <td>$${(p.budget || 0).toLocaleString()}</td>
-        <td onclick="event.stopPropagation()">
-            <button class="btn btn-sm btn-info btn-action me-1" onclick="viewProject(${p.id})" title="Ver">
+        <td>${budgetDisplay}</td>
+        <td onclick="event.stopPropagation()" class="text-center">
+            <button class="btn btn-sm btn-info btn-action me-1" onclick="viewProject(${p.id})" title="Ver detalles">
                 <i class="bi bi-eye"></i>
             </button>
-            <button class="btn btn-sm btn-success btn-action me-1" onclick="openBudgetModal(${p.id})" title="Presupuesto">
+            <button class="btn btn-sm btn-success btn-action me-1" onclick="openBudgetModal(${p.id})" title="Gestionar presupuesto">
                 <i class="bi bi-cash"></i>
             </button>
             <button class="btn btn-sm btn-warning btn-action me-1" onclick="editProject(${p.id})" title="Editar">
@@ -937,7 +1088,7 @@ function createRowFull(p) {
 function getStatusBadge(status) {
     const badges = {
         'active': '<span class="badge badge-active">Activo</span>',
-        'completed': '<span class="badge badge-completed">Terminado</span>',
+        'completed': '<span class="badge badge-completed">Completado</span>',
         'paused': '<span class="badge badge-paused">Pausado</span>'
     };
     return badges[status] || badges.active;
@@ -965,13 +1116,19 @@ function filterProjects() {
     
     const tbody = document.getElementById('projectsTable');
     tbody.innerHTML = '';
-    filtered.forEach(p => tbody.appendChild(createRowFull(p)));
+    
+    if (filtered.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted py-4">No se encontraron proyectos</td></tr>';
+    } else {
+        filtered.forEach(p => tbody.appendChild(createRowFull(p)));
+    }
 }
 
 function openCreateProjectModal() {
-    document.getElementById('modalProjectTitle').textContent = 'Nuevo Proyecto';
+    document.getElementById('modalProjectTitle').innerHTML = '<i class="bi bi-building me-2"></i>Nuevo Proyecto';
     document.getElementById('projectForm').reset();
     document.getElementById('projectProgress').value = '0';
+    document.getElementById('projectBudgetInitial').value = '0';
     currentProjectId = null;
 }
 
@@ -985,14 +1142,20 @@ function saveProject(e) {
         status: document.getElementById('projectStatus').value,
         progress: parseInt(document.getElementById('projectProgress').value) || 0,
         description: document.getElementById('projectDescription').value,
-        budget: 0,
+        budget: parseFloat(document.getElementById('projectBudgetInitial').value) || 0,
         spent: 0,
         expenses: []
     };
     
     if (currentProjectId) {
         const index = projects.findIndex(p => p.id === currentProjectId);
-        projects[index] = { ...projects[index], ...data };
+        const oldProject = projects[index];
+        projects[index] = { 
+            ...oldProject, 
+            ...data,
+            spent: oldProject.spent || 0,
+            expenses: oldProject.expenses || []
+        };
         showToast('success', 'Actualizado', 'Proyecto actualizado correctamente');
     } else {
         data.id = Date.now();
@@ -1010,13 +1173,14 @@ function editProject(id) {
     if (!project) return;
     
     currentProjectId = id;
-    document.getElementById('modalProjectTitle').textContent = 'Editar Proyecto';
+    document.getElementById('modalProjectTitle').innerHTML = '<i class="bi bi-pencil me-2"></i>Editar Proyecto';
     document.getElementById('projectName').value = project.name;
     document.getElementById('projectClient').value = project.client;
     document.getElementById('projectStartDate').value = project.startDate;
     document.getElementById('projectStatus').value = project.status;
     document.getElementById('projectProgress').value = project.progress;
     document.getElementById('projectDescription').value = project.description || '';
+    document.getElementById('projectBudgetInitial').value = project.budget || 0;
     
     new bootstrap.Modal(document.getElementById('modalProject')).show();
 }
@@ -1027,72 +1191,115 @@ function viewProject(id) {
     
     currentProjectId = id;
     const container = document.getElementById('projectDetails');
-    const budgetPercent = project.budget > 0 ? ((project.spent / project.budget) * 100).toFixed(1) : 0;
-    const budgetColor = budgetPercent >= 90 ? 'danger' : budgetPercent >= 75 ? 'warning' : 'success';
     
-    // Mostrar listado de gastos
+    const budget = parseFloat(project.budget) || 0;
+    const spent = parseFloat(project.spent) || 0;
+    const budgetPercent = budget > 0 ? ((spent / budget) * 100).toFixed(1) : 0;
+    const budgetColor = budgetPercent >= 100 ? 'danger' : budgetPercent >= 90 ? 'warning' : budgetPercent >= 75 ? 'info' : 'success';
+    
     let expensesHTML = '';
     if (project.expenses && project.expenses.length > 0) {
-        expensesHTML = '<div class="mt-3"><h6>Historial de Gastos:</h6><ul class="list-group">';
+        expensesHTML = '<div class="mt-4"><h6 class="mb-3"><i class="bi bi-receipt me-2"></i>Historial de Gastos:</h6><div class="table-responsive"><table class="table table-sm"><thead><tr><th>Fecha</th><th>Descripción</th><th class="text-end">Monto</th></tr></thead><tbody>';
         project.expenses.forEach(exp => {
-            const date = new Date(exp.date).toLocaleDateString('es-ES');
-            expensesHTML += `<li class="list-group-item d-flex justify-content-between align-items-center">
-                <div><strong>${exp.description}</strong><br><small class="text-muted">${date}</small></div>
-                <span class="badge bg-primary rounded-pill">$${exp.amount.toLocaleString()}</span>
-            </li>`;
+            const date = new Date(exp.date).toLocaleDateString('es-MX');
+            expensesHTML += `<tr>
+                <td><small>${date}</small></td>
+                <td>${exp.description}</td>
+                <td class="text-end"><strong>$${parseFloat(exp.amount).toLocaleString('es-MX')}</strong></td>
+            </tr>`;
         });
-        expensesHTML += '</ul></div>';
+        expensesHTML += '</tbody></table></div></div>';
+    } else {
+        expensesHTML = '<div class="alert alert-info mt-4"><i class="bi bi-info-circle me-2"></i>No se han registrado gastos para este proyecto</div>';
     }
     
     container.innerHTML = `
-        <div class="row g-3">
+        <div class="row g-3 mb-4">
             <div class="col-md-6">
-                <div class="p-3 bg-light rounded">
-                    <small class="text-muted">Proyecto</small>
-                    <div class="fw-bold">${project.name}</div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="p-3 bg-light rounded">
-                    <small class="text-muted">Cliente</small>
-                    <div class="fw-bold">${project.client}</div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="p-3 bg-light rounded">
-                    <small class="text-muted">Estado</small>
-                    <div>${getStatusBadge(project.status)}</div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="p-3 bg-light rounded">
-                    <small class="text-muted">Avance</small>
-                    <div class="fw-bold">${project.progress}%</div>
-                    <div class="progress mt-2" style="height:8px">
-                        <div class="progress-bar" style="width:${project.progress}%"></div>
+                <div class="card bg-light">
+                    <div class="card-body">
+                        <small class="text-muted d-block mb-1">Proyecto</small>
+                        <h5 class="mb-0">${project.name}</h5>
                     </div>
                 </div>
             </div>
+            <div class="col-md-6">
+                <div class="card bg-light">
+                    <div class="card-body">
+                        <small class="text-muted d-block mb-1">Cliente</small>
+                        <h5 class="mb-0">${project.client}</h5>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card bg-light">
+                    <div class="card-body">
+                        <small class="text-muted d-block mb-1">Estado</small>
+                        <div>${getStatusBadge(project.status)}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card bg-light">
+                    <div class="card-body">
+                        <small class="text-muted d-block mb-1">Fecha de Inicio</small>
+                        <strong>${new Date(project.startDate).toLocaleDateString('es-MX')}</strong>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card bg-light">
+                    <div class="card-body">
+                        <small class="text-muted d-block mb-1">Avance del Proyecto</small>
+                        <div class="d-flex align-items-center">
+                            <strong class="me-2">${project.progress}%</strong>
+                            <div class="progress flex-grow-1" style="height:8px">
+                                <div class="progress-bar" style="width:${project.progress}%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            ${project.description ? `
+            <div class="col-12">
+                <div class="card bg-light">
+                    <div class="card-body">
+                        <small class="text-muted d-block mb-1">Descripción</small>
+                        <p class="mb-0">${project.description}</p>
+                    </div>
+                </div>
+            </div>
+            ` : ''}
         </div>
         
-        <div class="card bg-light mt-3">
+        <div class="card border-${budgetColor}">
+            <div class="card-header bg-${budgetColor} bg-opacity-10 d-flex justify-content-between align-items-center">
+                <h6 class="mb-0"><i class="bi bi-cash-stack me-2"></i>Control de Presupuesto</h6>
+                <button class="btn btn-sm btn-${budgetColor}" onclick="openBudgetModal(${project.id})">
+                    <i class="bi bi-pencil me-1"></i>Gestionar
+                </button>
+            </div>
             <div class="card-body">
-                <div class="d-flex justify-content-between mb-3">
-                    <div>
-                        <small class="text-muted">Presupuesto Total</small>
-                        <h3 class="mb-0">$${project.budget.toLocaleString()}</h3>
+                <div class="row g-3 mb-3">
+                    <div class="col-md-4 text-center">
+                        <small class="text-muted d-block">Presupuesto Total</small>
+                        <h4 class="mb-0 text-primary">$${budget.toLocaleString('es-MX')}</h4>
                     </div>
-                    <button class="btn btn-primary-custom" onclick="openBudgetModal(${project.id})">
-                        <i class="bi bi-cash me-2"></i>Gestionar
-                    </button>
+                    <div class="col-md-4 text-center">
+                        <small class="text-muted d-block">Total Gastado</small>
+                        <h4 class="mb-0 text-${budgetColor}">$${spent.toLocaleString('es-MX')}</h4>
+                    </div>
+                    <div class="col-md-4 text-center">
+                        <small class="text-muted d-block">Disponible</small>
+                        <h4 class="mb-0 text-success">$${(budget - spent).toLocaleString('es-MX')}</h4>
+                    </div>
                 </div>
-                <div class="progress mb-2" style="height:12px">
-                    <div class="progress-bar bg-${budgetColor}" style="width:${budgetPercent}%"></div>
+                <div class="progress mb-2" style="height:20px">
+                    <div class="progress-bar bg-${budgetColor}" style="width:${Math.min(budgetPercent, 100)}%">
+                        ${budgetPercent}%
+                    </div>
                 </div>
-                <div class="d-flex justify-content-between small">
-                    <span>Gastado: $${project.spent.toLocaleString()}</span>
-                    <span class="fw-bold text-${budgetColor}">${budgetPercent}%</span>
-                </div>
+                <small class="text-muted">Porcentaje de presupuesto utilizado</small>
                 ${expensesHTML}
             </div>
         </div>
@@ -1103,7 +1310,7 @@ function viewProject(id) {
 
 function editCurrentProject() {
     bootstrap.Modal.getInstance(document.getElementById('modalView')).hide();
-    editProject(currentProjectId);
+    setTimeout(() => editProject(currentProjectId), 300);
 }
 
 function openBudgetModal(id) {
@@ -1115,7 +1322,12 @@ function openBudgetModal(id) {
     document.getElementById('budgetExpense').value = '';
     document.getElementById('expenseDescription').value = '';
     
-    new bootstrap.Modal(document.getElementById('modalBudget')).show();
+    const viewModal = bootstrap.Modal.getInstance(document.getElementById('modalView'));
+    if (viewModal) viewModal.hide();
+    
+    setTimeout(() => {
+        new bootstrap.Modal(document.getElementById('modalBudget')).show();
+    }, 300);
 }
 
 function saveBudget(e) {
@@ -1126,7 +1338,7 @@ function saveBudget(e) {
     
     const budget = parseFloat(document.getElementById('budgetTotal').value) || 0;
     const expense = parseFloat(document.getElementById('budgetExpense').value) || 0;
-    const description = document.getElementById('expenseDescription').value;
+    const description = document.getElementById('expenseDescription').value.trim();
     
     project.budget = budget;
     
@@ -1139,7 +1351,6 @@ function saveBudget(e) {
         });
         project.spent = (project.spent || 0) + expense;
         
-        // Verificar si se excede el 90% del presupuesto y crear alerta
         const percentage = (project.spent / project.budget) * 100;
         if (percentage >= 90) {
             const notification = {
@@ -1147,8 +1358,8 @@ function saveBudget(e) {
                 workerId: null,
                 projectId: project.id,
                 type: 'alert',
-                title: 'Alerta de Presupuesto',
-                message: `El proyecto "${project.name}" ha superado el 90% del presupuesto. Gasto actual: $${project.spent.toLocaleString()} de $${project.budget.toLocaleString()}`,
+                title: '⚠️ Alerta de Presupuesto',
+                message: `El proyecto "${project.name}" ha superado el ${percentage.toFixed(1)}% del presupuesto. Gasto actual: $${project.spent.toLocaleString('es-MX')} de $${project.budget.toLocaleString('es-MX')}`,
                 date: new Date().toISOString(),
                 read: false
             };
@@ -1169,9 +1380,9 @@ function confirmDelete(id) {
     if (!project) return;
     
     showCustomAlert(
-        '<i class="bi bi-exclamation-triangle text-danger" style="font-size:48px"></i>',
-        'Eliminar Proyecto',
-        `¿Eliminar "${project.name}"?`,
+        '<i class="bi bi-exclamation-triangle-fill text-danger" style="font-size:60px"></i>',
+        'Confirmar Eliminación',
+        `¿Estás seguro de eliminar el proyecto "${project.name}"? Esta acción no se puede deshacer.`,
         [
             { text: 'Cancelar', class: 'btn-secondary', action: closeCustomAlert },
             { text: 'Eliminar', class: 'btn-danger', action: () => deleteProject(id) }
@@ -1201,7 +1412,12 @@ function filterWorkers() {
     
     const tbody = document.getElementById('workersTable');
     tbody.innerHTML = '';
-    filtered.forEach(w => tbody.appendChild(createWorkerRow(w)));
+    
+    if (filtered.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted py-4">No se encontraron trabajadores</td></tr>';
+    } else {
+        filtered.forEach(w => tbody.appendChild(createWorkerRow(w)));
+    }
 }
 
 function createWorkerRow(worker) {
@@ -1209,7 +1425,7 @@ function createWorkerRow(worker) {
     
     const projectName = worker.projectId ? 
         (projects.find(p => p.id === worker.projectId)?.name || 'N/A') : 
-        'Sin asignar';
+        '<span class="text-muted">Sin asignar</span>';
     
     row.innerHTML = `
         <td><strong>${worker.name}</strong></td>
@@ -1217,7 +1433,7 @@ function createWorkerRow(worker) {
         <td>${getRoleBadge(worker.role)}</td>
         <td>${projectName}</td>
         <td>${worker.phone}</td>
-        <td>
+        <td class="text-center">
             <button class="btn btn-sm btn-warning btn-action me-1" onclick="editWorker(${worker.id})" title="Editar">
                 <i class="bi bi-pencil"></i>
             </button>
@@ -1231,7 +1447,7 @@ function createWorkerRow(worker) {
 }
 
 function openCreateWorkerModal() {
-    document.getElementById('modalWorkerTitle').textContent = 'Agregar Personal';
+    document.getElementById('modalWorkerTitle').innerHTML = '<i class="bi bi-person-plus me-2"></i>Agregar Personal';
     document.getElementById('workerForm').reset();
     currentWorkerId = null;
     updateProjectOptionsInWorkerModal();
@@ -1253,11 +1469,11 @@ function saveWorker(e) {
     if (currentWorkerId) {
         const index = workers.findIndex(w => w.id === currentWorkerId);
         workers[index] = { ...workers[index], ...data };
-        showToast('success', 'Actualizado', 'Trabajador actualizado correctamente');
+        showToast('success', 'Actualizado', 'Datos actualizados correctamente');
     } else {
         data.id = Date.now();
         workers.push(data);
-        showToast('success', 'Creado', 'Trabajador agregado correctamente');
+        showToast('success', 'Creado', 'Personal agregado correctamente');
     }
     
     saveWorkers();
@@ -1270,7 +1486,7 @@ function editWorker(id) {
     if (!worker) return;
     
     currentWorkerId = id;
-    document.getElementById('modalWorkerTitle').textContent = 'Editar Trabajador';
+    document.getElementById('modalWorkerTitle').innerHTML = '<i class="bi bi-pencil me-2"></i>Editar Trabajador';
     document.getElementById('workerName').value = worker.name;
     document.getElementById('workerEmail').value = worker.email;
     document.getElementById('workerPhone').value = worker.phone;
@@ -1288,9 +1504,9 @@ function confirmDeleteWorker(id) {
     if (!worker) return;
     
     showCustomAlert(
-        '<i class="bi bi-exclamation-triangle text-danger" style="font-size:48px"></i>',
-        'Eliminar Trabajador',
-        `¿Eliminar a "${worker.name}"?`,
+        '<i class="bi bi-exclamation-triangle-fill text-danger" style="font-size:60px"></i>',
+        'Confirmar Eliminación',
+        `¿Estás seguro de eliminar a "${worker.name}"? Esta acción no se puede deshacer.`,
         [
             { text: 'Cancelar', class: 'btn-secondary', action: closeCustomAlert },
             { text: 'Eliminar', class: 'btn-danger', action: () => deleteWorker(id) }
@@ -1312,62 +1528,72 @@ function generateBudgetReport() {
     const content = document.getElementById('budgetReportContent');
     
     if (projects.length === 0) {
-        content.innerHTML = '<p class="text-muted text-center">No hay proyectos para generar el reporte</p>';
+        content.innerHTML = '<div class="alert alert-info"><i class="bi bi-info-circle me-2"></i>No hay proyectos registrados para generar el reporte</div>';
         section.classList.remove('d-none');
         return;
     }
     
-    let html = '<div class="table-responsive"><table class="table table-hover"><thead><tr><th>Proyecto</th><th>Presupuesto</th><th>Gastado</th><th>% Utilizado</th><th>Desviación</th><th>Estado</th></tr></thead><tbody>';
+    let html = '<div class="table-responsive"><table class="table table-hover" id="budgetReportTable"><thead><tr><th>Proyecto</th><th>Presupuesto</th><th>Gastado</th><th>% Utilizado</th><th>Desviación</th><th>Estado</th></tr></thead><tbody>';
     
     projects.forEach(p => {
-        const percent = p.budget > 0 ? ((p.spent / p.budget) * 100).toFixed(1) : 0;
-        const deviation = p.spent - p.budget;
+        const budget = parseFloat(p.budget) || 0;
+        const spent = parseFloat(p.spent) || 0;
+        const percent = budget > 0 ? ((spent / budget) * 100).toFixed(1) : 0;
+        const deviation = spent - budget;
         const statusColor = percent >= 100 ? 'danger' : percent >= 90 ? 'warning' : percent >= 75 ? 'info' : 'success';
         const statusText = percent >= 100 ? 'Excedido' : percent >= 90 ? 'Crítico' : percent >= 75 ? 'Alerta' : 'Normal';
         
         html += `<tr>
-            <td><strong>${p.name}</strong></td>
-            <td>$${p.budget.toLocaleString()}</td>
-            <td>$${p.spent.toLocaleString()}</td>
+            <td><strong>${p.name}</strong><br><small class="text-muted">${p.client}</small></td>
+            <td>$${budget.toLocaleString('es-MX')}</td>
+            <td>$${spent.toLocaleString('es-MX')}</td>
             <td>
                 <div class="progress" style="height:20px">
                     <div class="progress-bar bg-${statusColor}" style="width:${Math.min(percent, 100)}%">${percent}%</div>
                 </div>
             </td>
-            <td class="${deviation > 0 ? 'text-danger' : 'text-success'}">${deviation > 0 ? '+' : ''}$${deviation.toLocaleString()}</td>
+            <td class="${deviation > 0 ? 'text-danger' : 'text-success'} fw-bold">${deviation > 0 ? '+' : ''}$${deviation.toLocaleString('es-MX')}</td>
             <td><span class="badge bg-${statusColor}">${statusText}</span></td>
         </tr>`;
     });
     
     html += '</tbody></table></div>';
     
-    // Agregar resumen
-    const totalBudget = projects.reduce((sum, p) => sum + p.budget, 0);
-    const totalSpent = projects.reduce((sum, p) => sum + p.spent, 0);
+    const totalBudget = projects.reduce((sum, p) => sum + (parseFloat(p.budget) || 0), 0);
+    const totalSpent = projects.reduce((sum, p) => sum + (parseFloat(p.spent) || 0), 0);
     const totalPercent = totalBudget > 0 ? ((totalSpent / totalBudget) * 100).toFixed(1) : 0;
+    const totalDeviation = totalSpent - totalBudget;
     
-    html += `<div class="row g-3 mt-3">
-        <div class="col-md-4">
+    html += `<div class="row g-3 mt-4">
+        <div class="col-md-3">
             <div class="card bg-primary text-white">
-                <div class="card-body">
-                    <h6>Presupuesto Total</h6>
-                    <h3>$${totalBudget.toLocaleString()}</h3>
+                <div class="card-body text-center">
+                    <small class="d-block opacity-75">Presupuesto Total</small>
+                    <h3 class="mb-0">$${totalBudget.toLocaleString('es-MX')}</h3>
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-3">
+            <div class="card bg-danger text-white">
+                <div class="card-body text-center">
+                    <small class="d-block opacity-75">Total Gastado</small>
+                    <h3 class="mb-0">$${totalSpent.toLocaleString('es-MX')}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
             <div class="card bg-warning text-white">
-                <div class="card-body">
-                    <h6>Total Gastado</h6>
-                    <h3>$${totalSpent.toLocaleString()}</h3>
+                <div class="card-body text-center">
+                    <small class="d-block opacity-75">% Utilizado</small>
+                    <h3 class="mb-0">${totalPercent}%</h3>
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="card bg-info text-white">
-                <div class="card-body">
-                    <h6>% Utilizado</h6>
-                    <h3>${totalPercent}%</h3>
+        <div class="col-md-3">
+            <div class="card bg-${totalDeviation > 0 ? 'danger' : 'success'} text-white">
+                <div class="card-body text-center">
+                    <small class="d-block opacity-75">Desviación</small>
+                    <h3 class="mb-0">${totalDeviation > 0 ? '+' : ''}$${totalDeviation.toLocaleString('es-MX')}</h3>
                 </div>
             </div>
         </div>
@@ -1375,14 +1601,158 @@ function generateBudgetReport() {
     
     content.innerHTML = html;
     section.classList.remove('d-none');
+    section.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
+// ============== EXPORTAR A PDF ==============
 function exportReportToPDF() {
-    // Simulación de exportación a PDF
-    showToast('info', 'Exportando', 'Generando reporte en PDF...');
-    setTimeout(() => {
-        showToast('success', 'Completado', 'Reporte generado correctamente (Funcionalidad simulada)');
-    }, 2000);
+    if (projects.length === 0) {
+        showToast('warning', 'Sin datos', 'No hay proyectos para exportar');
+        return;
+    }
+
+    showToast('info', 'Generando', 'Creando reporte PDF...');
+    
+    try {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        
+        // Título
+        doc.setFontSize(18);
+        doc.text('Reporte de Presupuestos', 14, 20);
+        
+        doc.setFontSize(11);
+        doc.text(`Fecha: ${new Date().toLocaleDateString('es-MX')}`, 14, 30);
+        
+        // Preparar datos para la tabla
+        const tableData = projects.map(p => {
+            const budget = parseFloat(p.budget) || 0;
+            const spent = parseFloat(p.spent) || 0;
+            const percent = budget > 0 ? ((spent / budget) * 100).toFixed(1) : 0;
+            const deviation = spent - budget;
+            const statusText = percent >= 100 ? 'Excedido' : percent >= 90 ? 'Crítico' : percent >= 75 ? 'Alerta' : 'Normal';
+            
+            return [
+                p.name,
+                p.client,
+                `$${budget.toLocaleString('es-MX')}`,
+                `$${spent.toLocaleString('es-MX')}`,
+                `${percent}%`,
+                `${deviation > 0 ? '+' : ''}$${deviation.toLocaleString('es-MX')}`,
+                statusText
+            ];
+        });
+        
+        // Agregar tabla
+        doc.autoTable({
+            startY: 40,
+            head: [['Proyecto', 'Cliente', 'Presupuesto', 'Gastado', '% Usado', 'Desviación', 'Estado']],
+            body: tableData,
+            theme: 'striped',
+            styles: { fontSize: 8 },
+            headStyles: { fillColor: [13, 39, 61] }
+        });
+        
+        // Resumen
+        const totalBudget = projects.reduce((sum, p) => sum + (parseFloat(p.budget) || 0), 0);
+        const totalSpent = projects.reduce((sum, p) => sum + (parseFloat(p.spent) || 0), 0);
+        const totalPercent = totalBudget > 0 ? ((totalSpent / totalBudget) * 100).toFixed(1) : 0;
+        
+        const finalY = doc.lastAutoTable.finalY + 10;
+        doc.setFontSize(12);
+        doc.text('Resumen Total:', 14, finalY);
+        doc.setFontSize(10);
+        doc.text(`Presupuesto Total: $${totalBudget.toLocaleString('es-MX')}`, 14, finalY + 8);
+        doc.text(`Total Gastado: $${totalSpent.toLocaleString('es-MX')}`, 14, finalY + 16);
+        doc.text(`Porcentaje Utilizado: ${totalPercent}%`, 14, finalY + 24);
+        
+        // Descargar
+        doc.save(`reporte-presupuestos-${new Date().getTime()}.pdf`);
+        showToast('success', 'Completado', 'Reporte PDF descargado');
+        
+    } catch (error) {
+        console.error('Error al generar PDF:', error);
+        showToast('error', 'Error', 'No se pudo generar el PDF');
+    }
+}
+
+// ============== EXPORTAR A EXCEL ==============
+function exportReportToExcel() {
+    if (projects.length === 0) {
+        showToast('warning', 'Sin datos', 'No hay proyectos para exportar');
+        return;
+    }
+
+    showToast('info', 'Generando', 'Creando archivo Excel...');
+    
+    try {
+        // Preparar datos
+        const data = projects.map(p => {
+            const budget = parseFloat(p.budget) || 0;
+            const spent = parseFloat(p.spent) || 0;
+            const percent = budget > 0 ? ((spent / budget) * 100).toFixed(1) : 0;
+            const deviation = spent - budget;
+            const statusText = percent >= 100 ? 'Excedido' : percent >= 90 ? 'Crítico' : percent >= 75 ? 'Alerta' : 'Normal';
+            
+            return {
+                'Proyecto': p.name,
+                'Cliente': p.client,
+                'Fecha Inicio': new Date(p.startDate).toLocaleDateString('es-MX'),
+                'Estado': p.status === 'active' ? 'Activo' : p.status === 'paused' ? 'Pausado' : 'Completado',
+                'Avance (%)': p.progress,
+                'Presupuesto': budget,
+                'Gastado': spent,
+                '% Utilizado': parseFloat(percent),
+                'Desviación': deviation,
+                'Estado Presupuesto': statusText
+            };
+        });
+        
+        // Agregar resumen
+        const totalBudget = projects.reduce((sum, p) => sum + (parseFloat(p.budget) || 0), 0);
+        const totalSpent = projects.reduce((sum, p) => sum + (parseFloat(p.spent) || 0), 0);
+        const totalPercent = totalBudget > 0 ? ((totalSpent / totalBudget) * 100).toFixed(1) : 0;
+        const totalDeviation = totalSpent - totalBudget;
+        
+        data.push({});
+        data.push({
+            'Proyecto': 'TOTALES',
+            'Presupuesto': totalBudget,
+            'Gastado': totalSpent,
+            '% Utilizado': parseFloat(totalPercent),
+            'Desviación': totalDeviation
+        });
+        
+        // Crear hoja de cálculo
+        const ws = XLSX.utils.json_to_sheet(data);
+        
+        // Ajustar anchos de columna
+        const wscols = [
+            {wch:25}, // Proyecto
+            {wch:20}, // Cliente
+            {wch:12}, // Fecha Inicio
+            {wch:12}, // Estado
+            {wch:10}, // Avance
+            {wch:15}, // Presupuesto
+            {wch:15}, // Gastado
+            {wch:12}, // % Utilizado
+            {wch:15}, // Desviación
+            {wch:18}  // Estado Presupuesto
+        ];
+        ws['!cols'] = wscols;
+        
+        // Crear libro
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, 'Reporte Presupuestos');
+        
+        // Descargar
+        XLSX.writeFile(wb, `reporte-presupuestos-${new Date().getTime()}.xlsx`);
+        showToast('success', 'Completado', 'Archivo Excel descargado');
+        
+    } catch (error) {
+        console.error('Error al generar Excel:', error);
+        showToast('error', 'Error', 'No se pudo generar el archivo Excel');
+    }
 }
 
 function showProjectComparison() {
@@ -1390,11 +1760,17 @@ function showProjectComparison() {
     const activeProjects = projects.filter(p => p.status === 'active');
     
     if (activeProjects.length < 2) {
-        content.innerHTML = '<p class="text-muted text-center py-5">Se necesitan al menos 2 proyectos activos para comparar</p>';
+        content.innerHTML = `
+            <div class="text-center py-5">
+                <i class="bi bi-info-circle display-1 text-muted mb-3"></i>
+                <h5>Se necesitan al menos 2 proyectos activos</h5>
+                <p class="text-muted">Crea más proyectos para poder compararlos</p>
+            </div>
+        `;
         return;
     }
     
-    let html = '<div class="table-responsive"><table class="table table-hover"><thead><tr><th>Proyecto</th><th>Cliente</th><th>Avance</th><th>Días Transcurridos</th><th>Estado de Avance</th></tr></thead><tbody>';
+    let html = '<div class="table-responsive"><table class="table table-hover"><thead><tr><th>Proyecto</th><th>Cliente</th><th>Avance</th><th>Días Transcurridos</th><th>Estado</th></tr></thead><tbody>';
     
     activeProjects.forEach(p => {
         const startDate = new Date(p.startDate);
@@ -1405,10 +1781,10 @@ function showProjectComparison() {
         let progressColor = '';
         
         if (p.progress >= 75) {
-            progressStatus = 'En tiempo';
+            progressStatus = 'Adelantado';
             progressColor = 'success';
         } else if (p.progress >= 50) {
-            progressStatus = 'Normal';
+            progressStatus = 'En tiempo';
             progressColor = 'info';
         } else if (p.progress >= 25) {
             progressStatus = 'Con retraso';
@@ -1422,9 +1798,11 @@ function showProjectComparison() {
             <td><strong>${p.name}</strong></td>
             <td>${p.client}</td>
             <td>
-                <div>${p.progress}%</div>
-                <div class="progress mt-1" style="height:8px">
-                    <div class="progress-bar" style="width:${p.progress}%"></div>
+                <div class="d-flex align-items-center">
+                    <span class="me-2">${p.progress}%</span>
+                    <div class="progress flex-grow-1" style="height:8px; min-width:100px;">
+                        <div class="progress-bar bg-${progressColor}" style="width:${p.progress}%"></div>
+                    </div>
                 </div>
             </td>
             <td>${daysElapsed} días</td>
@@ -1434,19 +1812,29 @@ function showProjectComparison() {
     
     html += '</tbody></table></div>';
     
-    // Agregar gráfica de comparación
-    html += '<div class="mt-4"><h6>Comparación Visual</h6><div class="row g-3">';
+    html += '<div class="mt-4"><h6 class="mb-3"><i class="bi bi-graph-up me-2"></i>Comparación Visual de Avances</h6><div class="row g-3">';
     
     activeProjects.forEach(p => {
         const progressColor = p.progress >= 75 ? 'success' : p.progress >= 50 ? 'info' : p.progress >= 25 ? 'warning' : 'danger';
+        const budget = parseFloat(p.budget) || 0;
+        const spent = parseFloat(p.spent) || 0;
+        
         html += `<div class="col-md-6">
             <div class="card">
                 <div class="card-body">
-                    <h6>${p.name}</h6>
-                    <div class="progress" style="height:30px">
-                        <div class="progress-bar bg-${progressColor}" style="width:${p.progress}%">${p.progress}%</div>
+                    <h6 class="mb-3">${p.name}</h6>
+                    <div class="mb-2">
+                        <small class="text-muted">Avance del Proyecto</small>
+                        <div class="progress mt-1" style="height:25px">
+                            <div class="progress-bar bg-${progressColor}" style="width:${p.progress}%">
+                                <strong>${p.progress}%</strong>
+                            </div>
+                        </div>
                     </div>
-                    <small class="text-muted mt-2">Presupuesto: $${p.budget.toLocaleString()} | Gastado: $${p.spent.toLocaleString()}</small>
+                    <div class="d-flex justify-content-between mt-3">
+                        <small class="text-muted">Presupuesto: <strong>$${budget.toLocaleString('es-MX')}</strong></small>
+                        <small class="text-muted">Gastado: <strong>$${spent.toLocaleString('es-MX')}</strong></small>
+                    </div>
                 </div>
             </div>
         </div>`;
@@ -1481,7 +1869,10 @@ function updateNotificationsList() {
         document.getElementById('notificationsListCard').classList.remove('d-none');
         
         container.innerHTML = '';
-        notifications.sort((a, b) => new Date(b.date) - new Date(a.date)).forEach(notif => {
+        
+        const sortedNotifications = [...notifications].sort((a, b) => new Date(b.date) - new Date(a.date));
+        
+        sortedNotifications.forEach(notif => {
             const card = createNotificationCard(notif);
             container.appendChild(card);
         });
@@ -1496,7 +1887,7 @@ function createNotificationCard(notif) {
     const project = projects.find(p => p.id === notif.projectId);
     
     const date = new Date(notif.date);
-    const formattedDate = date.toLocaleDateString('es-ES', { 
+    const formattedDate = date.toLocaleDateString('es-MX', { 
         day: '2-digit', 
         month: 'short', 
         year: 'numeric',
@@ -1504,27 +1895,29 @@ function createNotificationCard(notif) {
         minute: '2-digit'
     });
     
-    let icon = '<i class="bi bi-info-circle-fill text-primary"></i>';
-    if (notif.type === 'problem') icon = '<i class="bi bi-exclamation-triangle-fill text-danger"></i>';
-    if (notif.type === 'alert') icon = '<i class="bi bi-exclamation-circle-fill text-warning"></i>';
+    let icon = '<i class="bi bi-info-circle-fill text-primary fs-4"></i>';
+    if (notif.type === 'problem') icon = '<i class="bi bi-exclamation-triangle-fill text-danger fs-4"></i>';
+    if (notif.type === 'alert') icon = '<i class="bi bi-exclamation-circle-fill text-warning fs-4"></i>';
     
     div.innerHTML = `
         <div class="card-body">
             <div class="d-flex justify-content-between align-items-start mb-2">
-                <div class="d-flex align-items-center">
-                    <span class="me-2 fs-4">${icon}</span>
-                    <div>
-                        <h6 class="mb-0">${notif.title}</h6>
+                <div class="d-flex align-items-start flex-grow-1">
+                    <span class="me-3">${icon}</span>
+                    <div class="flex-grow-1">
+                        <h6 class="mb-1">${notif.title}</h6>
                         <small class="text-muted">
-                            ${worker ? worker.name : 'Sistema'} • ${project ? project.name : 'General'} • ${formattedDate}
+                            ${worker ? `<i class="bi bi-person me-1"></i>${worker.name}` : '<i class="bi bi-gear me-1"></i>Sistema'} • 
+                            ${project ? `<i class="bi bi-building ms-2 me-1"></i>${project.name}` : ''} • 
+                            <i class="bi bi-clock ms-2 me-1"></i>${formattedDate}
                         </small>
                     </div>
                 </div>
-                ${!notif.read ? '<span class="badge bg-danger">Nueva</span>' : ''}
+                ${!notif.read ? '<span class="badge bg-danger ms-2">Nueva</span>' : ''}
             </div>
-            <p class="mb-0">${notif.message}</p>
+            <p class="mb-2 ms-5">${notif.message}</p>
             ${!notif.read ? `
-                <button class="btn btn-sm btn-outline-secondary mt-2" onclick="markAsRead(${notif.id})">
+                <button class="btn btn-sm btn-outline-primary ms-5" onclick="markAsRead(${notif.id})">
                     <i class="bi bi-check me-1"></i>Marcar como leída
                 </button>
             ` : ''}
@@ -1541,10 +1934,16 @@ function markAsRead(id) {
         saveNotifications();
         updateNotificationsList();
         updateNotificationBadge();
+        showToast('success', 'Actualizado', 'Notificación marcada como leída');
     }
 }
 
 function markAllAsRead() {
+    if (notifications.length === 0) {
+        showToast('info', 'Información', 'No hay notificaciones para marcar');
+        return;
+    }
+    
     notifications.forEach(n => n.read = true);
     saveNotifications();
     updateNotificationsList();
@@ -1555,19 +1954,19 @@ function markAllAsRead() {
 // ============== FUNCIONES DE UTILIDAD ==============
 function confirmLogout() {
     showCustomAlert(
-        '<i class="bi bi-box-arrow-right text-warning" style="font-size:48px"></i>',
+        '<i class="bi bi-box-arrow-right text-warning" style="font-size:60px"></i>',
         'Cerrar Sesión',
-        '¿Cerrar sesión?',
+        '¿Estás seguro de que deseas cerrar sesión?',
         [
             { text: 'Cancelar', class: 'btn-secondary', action: closeCustomAlert },
-            { text: 'Salir', class: 'btn-primary-custom', action: logout }
+            { text: 'Cerrar Sesión', class: 'btn-primary-custom', action: logout }
         ]
     );
 }
 
 function logout() {
     closeCustomAlert();
-    showToast('success', 'Cerrando', 'Hasta pronto...');
+    showToast('success', 'Cerrando sesión', 'Hasta pronto...');
     setTimeout(() => {
         document.getElementById('logout-form').submit();
     }, 1500);
@@ -1598,6 +1997,8 @@ function closeCustomAlert() {
 
 function showToast(type, title, message) {
     const toast = document.getElementById('toast');
+    const toastElement = new bootstrap.Toast(toast);
+    
     const icons = {
         success: '✅',
         error: '❌',
@@ -1605,12 +2006,12 @@ function showToast(type, title, message) {
         info: 'ℹ️'
     };
     
-    document.getElementById('toastIcon').textContent = icons[type];
+    document.getElementById('toastIcon').textContent = icons[type] || icons.info;
     document.getElementById('toastTitle').textContent = title;
     document.getElementById('toastMessage').textContent = message;
     
-    new bootstrap.Toast(toast).show();
+    toastElement.show();
 }
-</script>
+    </script>
 </body>
 </html>

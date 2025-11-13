@@ -351,12 +351,10 @@
         <div class="left-panel">
             <div class="logo-section">
                 <div class="logo-placeholder">
-                    <!-- AQUÍ VA TU LOGO -->
-                    <!-- Opción 1: Si tienes imagen -->
-                    <!-- <img src="{{ asset('img/logo.png') }}" alt="Logo"> -->
                     
-                    <!-- Opción 2: Icono temporal -->
-                    <i class="bi bi-building" style="font-size: 50px; color: white;"></i>
+                     <img src="{{ asset('img/logo.png') }}" alt="Logo"> 
+                    
+            
                 </div>
                 <div class="logo-text">EL LOGO AQI</div>
             </div>
