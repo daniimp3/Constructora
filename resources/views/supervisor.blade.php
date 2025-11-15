@@ -7,7 +7,6 @@
     <title>Dashboard - Supervisor</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
     <style>
@@ -15,8 +14,6 @@
             --primary: #0d273d;
             --secondary: #3e6985;
             --accent: #8aa7bc;
-            --light: #a6bed1;
-            --lighter: #cdd7df;
         }
         
         * { font-family: 'Poppins', sans-serif; }
@@ -41,7 +38,7 @@
         }
         
         .company-logo {
-            max-width: 80px;
+            max-width: 180px;
             height: auto;
             display: block;
             margin: 0 auto;
@@ -80,14 +77,11 @@
             border-left: 4px solid;
         }
         
-        .stat-card:hover {
-            transform: translateY(-5px);
-        }
+        .stat-card:hover { transform: translateY(-5px); }
         
         .stat-card.blue { border-color: #3b82f6; }
         .stat-card.green { border-color: #10b981; }
         .stat-card.yellow { border-color: #f59e0b; }
-        .stat-card.purple { border-color: #8b5cf6; }
         .stat-card.red { border-color: #ef4444; }
         
         .btn-primary-custom {
@@ -98,7 +92,6 @@
         
         .btn-primary-custom:hover {
             background: linear-gradient(135deg, #2d5166, var(--secondary));
-            color: white;
         }
         
         .btn-action {
@@ -110,12 +103,73 @@
         .badge-pending { background: #fef3c7; color: #92400e; }
         .badge-in-progress { background: #dbeafe; color: #1e40af; }
         .badge-completed { background: #dcfce7; color: #166534; }
-        .badge-cancelled { background: #fee2e2; color: #991b1b; }
-        
         .badge-low { background: #dbeafe; color: #1e40af; }
         .badge-medium { background: #fef3c7; color: #92400e; }
         .badge-high { background: #fed7aa; color: #9a3412; }
         .badge-urgent { background: #fee2e2; color: #991b1b; }
+        .badge-active { background: #dcfce7; color: #166534; }
+        .badge-paused { background: #fef3c7; color: #92400e; }
+        
+        .project-card {
+            border-left: 4px solid var(--accent);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .project-card:hover {
+            border-left-color: var(--secondary);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transform: translateY(-3px);
+        }
+        
+        .task-item {
+            border-left: 3px solid #cbd5e1;
+            transition: all 0.3s;
+        }
+        
+        .task-item:hover {
+            border-left-color: var(--secondary);
+            background: #f8fafc;
+        }
+        
+        .task-item.completed {
+            opacity: 0.7;
+            border-left-color: #10b981;
+        }
+        
+        .evidence-card {
+            transition: transform 0.3s;
+        }
+        
+        .evidence-card:hover {
+            transform: scale(1.05);
+        }
+        
+        .material-item {
+            border-left: 3px solid var(--accent);
+            transition: all 0.3s;
+        }
+        
+        .material-item:hover {
+            border-left-color: var(--secondary);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        
+        .notification-item {
+            border-left: 4px solid #ef4444;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .notification-item:hover {
+            background: #fef2f2;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        
+        .notification-item.read {
+            border-left-color: #cbd5e1;
+            opacity: 0.7;
+        }
         
         .custom-alert-overlay {
             display: none;
@@ -140,6 +194,8 @@
             border-radius: 20px;
             padding: 35px;
             max-width: 450px;
+            max-height: 90vh;
+            overflow-y: auto;
             animation: slideIn 0.3s;
         }
         
@@ -147,49 +203,9 @@
             from { opacity: 0; transform: translateY(-50px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        
-        .notification-badge {
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            background: #ef4444;
-            color: white;
-            border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            font-size: 11px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-        }
-        
-        .alert-item {
-            border-left: 3px solid #ef4444;
-            transition: all 0.3s;
-        }
-        
-        .alert-item:hover {
-            background: #fef2f2;
-            transform: translateX(5px);
-        }
-        
-        .alert-item.read {
-            border-left-color: #d1d5db;
-            opacity: 0.7;
-        }
 
-        .progress {
-            height: 10px;
-            border-radius: 5px;
-            overflow: hidden;
-        }
-
-        .modal-content {
-            border-radius: 15px;
-            border: none;
-        }
-
+        .progress { height: 10px; border-radius: 5px; }
+        .modal-content { border-radius: 15px; border: none; }
         .modal-header {
             background: var(--secondary);
             color: white;
@@ -201,26 +217,24 @@
             box-shadow: 0 0 0 0.2rem rgba(62, 105, 133, 0.25);
         }
 
-        .evidence-preview {
-            width: 100px;
-            height: 100px;
-            object-fit: cover;
+        .tab-button {
+            padding: 10px 20px;
+            border: none;
+            background: #e5e7eb;
+            color: #6b7280;
             border-radius: 8px;
             cursor: pointer;
-        }
-
-        .attendance-present { background: #dcfce7; color: #166534; }
-        .attendance-absent { background: #fee2e2; color: #991b1b; }
-        .attendance-late { background: #fef3c7; color: #92400e; }
-
-        .material-item {
-            border-left: 3px solid var(--accent);
             transition: all 0.3s;
+            margin-right: 10px;
         }
-
-        .material-item:hover {
-            border-left-color: var(--secondary);
-            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        
+        .tab-button.active {
+            background: var(--secondary);
+            color: white;
+        }
+        
+        .tab-button:hover:not(.active) {
+            background: #d1d5db;
         }
         
         @media (max-width: 768px) {
@@ -232,13 +246,11 @@
 <body>
     <!-- Sidebar -->
     <div class="sidebar">
-        <!-- Logo Section -->
         <div class="logo-container">
             <img src="{{ asset('img/logo.png') }}" alt="Logo Empresa" class="company-logo">
             <p class="company-subtitle mb-0">Panel de Supervisor</p>
         </div>
         
-        <!-- User Profile -->
         <div class="bg-dark bg-opacity-25 m-3 p-3 rounded">
             <div class="d-flex align-items-center">
                 <div class="bg-gradient rounded-circle d-flex align-items-center justify-content-center text-white fw-bold" 
@@ -252,7 +264,6 @@
             </div>
         </div>
         
-        <!-- Navigation -->
         <ul class="nav flex-column px-3 mt-3">
             <li class="nav-item">
                 <a class="nav-link active" href="#" onclick="showSection('overview');return false">
@@ -260,29 +271,19 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#" onclick="showSection('tasks');return false">
-                    <i class="bi bi-list-task me-2"></i>Tareas
+                <a class="nav-link" href="#" onclick="showSection('projects');return false">
+                    <i class="bi bi-building me-2"></i>Mis Proyectos
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#" onclick="showSection('evidence');return false">
-                    <i class="bi bi-camera me-2"></i>Evidencias
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#" onclick="showSection('materials');return false">
-                    <i class="bi bi-box-seam me-2"></i>Materiales
+                <a class="nav-link" href="#" onclick="showSection('notifications');return false">
+                    <i class="bi bi-bell me-2"></i>Notificaciones
+                    <span class="badge bg-danger ms-2" id="notificationBadge" style="display:none;">0</span>
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="#" onclick="showSection('attendance');return false">
                     <i class="bi bi-calendar-check me-2"></i>Asistencias
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link position-relative" href="#" onclick="showSection('alerts');return false">
-                    <i class="bi bi-exclamation-triangle me-2"></i>Alertas
-                    <span class="notification-badge d-none" id="alertsBadge">0</span>
                 </a>
             </li>
             <li class="nav-item">
@@ -311,15 +312,15 @@
             <!-- Stats Cards -->
             <div class="row g-3 mb-4">
                 <div class="col-md-3">
-                    <div class="card stat-card blue shadow-sm h-100" onclick="showSection('tasks')">
+                    <div class="card stat-card blue shadow-sm h-100" onclick="showSection('projects')">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-start mb-2">
                                 <div>
-                                    <h3 class="mb-0 fw-bold" id="totalTasks">0</h3>
-                                    <small class="text-muted">Tareas Totales</small>
+                                    <h3 class="mb-0 fw-bold" id="totalProjects">0</h3>
+                                    <small class="text-muted">Proyectos Asignados</small>
                                 </div>
                                 <div class="bg-primary bg-opacity-10 rounded p-2">
-                                    <i class="bi bi-list-task fs-4 text-primary"></i>
+                                    <i class="bi bi-building fs-4 text-primary"></i>
                                 </div>
                             </div>
                         </div>
@@ -331,11 +332,11 @@
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-start mb-2">
                                 <div>
-                                    <h3 class="mb-0 fw-bold" id="completedTasks">0</h3>
-                                    <small class="text-muted">Completadas</small>
+                                    <h3 class="mb-0 fw-bold" id="totalTasks">0</h3>
+                                    <small class="text-muted">Tareas Totales</small>
                                 </div>
                                 <div class="bg-success bg-opacity-10 rounded p-2">
-                                    <i class="bi bi-check-circle fs-4 text-success"></i>
+                                    <i class="bi bi-list-task fs-4 text-success"></i>
                                 </div>
                             </div>
                         </div>
@@ -343,15 +344,15 @@
                 </div>
                 
                 <div class="col-md-3">
-                    <div class="card stat-card yellow shadow-sm h-100" onclick="showSection('attendance')">
+                    <div class="card stat-card yellow shadow-sm h-100">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-start mb-2">
                                 <div>
-                                    <h3 class="mb-0 fw-bold" id="presentWorkers">0</h3>
-                                    <small class="text-muted">Presentes Hoy</small>
+                                    <h3 class="mb-0 fw-bold" id="completedTasks">0</h3>
+                                    <small class="text-muted">Tareas Completadas</small>
                                 </div>
                                 <div class="bg-warning bg-opacity-10 rounded p-2">
-                                    <i class="bi bi-people fs-4 text-warning"></i>
+                                    <i class="bi bi-check-circle fs-4 text-warning"></i>
                                 </div>
                             </div>
                         </div>
@@ -359,15 +360,15 @@
                 </div>
                 
                 <div class="col-md-3">
-                    <div class="card stat-card red shadow-sm h-100" onclick="showSection('alerts')">
+                    <div class="card stat-card red shadow-sm h-100" onclick="showSection('notifications')">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-start mb-2">
                                 <div>
-                                    <h3 class="mb-0 fw-bold text-danger" id="pendingAlerts">0</h3>
-                                    <small class="text-muted">Alertas Pendientes</small>
+                                    <h3 class="mb-0 fw-bold" id="pendingNotifications">0</h3>
+                                    <small class="text-muted">Notificaciones</small>
                                 </div>
                                 <div class="bg-danger bg-opacity-10 rounded p-2">
-                                    <i class="bi bi-exclamation-triangle fs-4 text-danger"></i>
+                                    <i class="bi bi-bell fs-4 text-danger"></i>
                                 </div>
                             </div>
                         </div>
@@ -375,177 +376,212 @@
                 </div>
             </div>
             
-            <!-- Quick Actions -->
-            <div class="row g-3 mb-4">
-                <div class="col-md-4">
-                    <div class="card shadow-sm h-100">
-                        <div class="card-body text-center">
-                            <i class="bi bi-plus-circle fs-1 text-primary mb-3"></i>
-                            <h5>Asignar Tarea</h5>
-                            <p class="text-muted small">Crea y asigna tareas a tu equipo</p>
-                            <button class="btn btn-primary-custom" onclick="showSection('tasks')">
-                                <i class="bi bi-arrow-right me-2"></i>Gestionar
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="col-md-4">
-                    <div class="card shadow-sm h-100">
-                        <div class="card-body text-center">
-                            <i class="bi bi-camera fs-1 text-success mb-3"></i>
-                            <h5>Subir Evidencia</h5>
-                            <p class="text-muted small">Documenta el avance del proyecto</p>
-                            <button class="btn btn-primary-custom" onclick="showSection('evidence')">
-                                <i class="bi bi-arrow-right me-2"></i>Agregar
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="col-md-4">
-                    <div class="card shadow-sm h-100">
-                        <div class="card-body text-center">
-                            <i class="bi bi-calendar-check fs-1 text-warning mb-3"></i>
-                            <h5>Registrar Asistencia</h5>
-                            <p class="text-muted small">Control de personal diario</p>
-                            <button class="btn btn-primary-custom" onclick="showSection('attendance')">
-                                <i class="bi bi-arrow-right me-2"></i>Registrar
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Recent Activity -->
+            <!-- Recent Projects -->
             <div class="card shadow-sm">
-                <div class="card-header bg-white">
-                    <h5 class="mb-0">Actividad Reciente</h5>
+                <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Mis Proyectos Recientes</h5>
+                    <button class="btn btn-sm btn-outline-secondary" onclick="showSection('projects')">
+                        Ver todos
+                    </button>
                 </div>
-                <div class="card-body" id="recentActivity">
-                    <p class="text-muted text-center py-4">No hay actividad reciente</p>
+                <div class="card-body" id="recentProjects">
+                    <p class="text-muted text-center py-4">No hay proyectos asignados</p>
                 </div>
             </div>
         </div>
 
-        <!-- Sección de Tareas -->
-        <div id="tasks" class="content-section d-none">
-            <div class="card shadow-sm mb-4">
-                <div class="card-body d-flex justify-content-between align-items-center flex-wrap">
-                    <div>
-                        <h2 class="mb-1">Gestión de Tareas</h2>
-                        <p class="text-muted mb-0">Asigna y da seguimiento a las tareas del equipo</p>
-                    </div>
-                    <button class="btn btn-primary-custom" data-bs-toggle="modal" data-bs-target="#modalTask" onclick="openCreateTaskModal()">
-                        <i class="bi bi-plus-circle me-2"></i>Nueva Tarea
-                    </button>
-                </div>
-            </div>
-            
-            <!-- Filters -->
+        <!-- Sección de Proyectos -->
+        <div id="projects" class="content-section d-none">
             <div class="card shadow-sm mb-4">
                 <div class="card-body">
-                    <div class="row g-3">
-                        <div class="col-md-4">
-                            <input type="text" class="form-control" id="searchTask" placeholder="🔍 Buscar tarea..." onkeyup="filterTasks()">
+                    <h2 class="mb-1">Mis Proyectos</h2>
+                    <p class="text-muted mb-0">Gestiona tus proyectos asignados</p>
+                </div>
+            </div>
+            
+            <div id="projectsList" class="row g-3"></div>
+            
+            <div id="emptyProjects" class="card shadow-sm text-center d-none">
+                <div class="card-body py-5">
+                    <i class="bi bi-building display-1 text-muted mb-3"></i>
+                    <h3>Sin Proyectos Asignados</h3>
+                    <p class="text-muted">No tienes proyectos asignados en este momento</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Detalle del Proyecto -->
+        <div id="project-detail" class="content-section d-none">
+            <div class="card shadow-sm mb-4">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                    <div>
+                        <button class="btn btn-sm btn-outline-secondary mb-2" onclick="showSection('projects')">
+                            <i class="bi bi-arrow-left me-1"></i>Volver a Proyectos
+                        </button>
+                        <h2 class="mb-1" id="projectDetailTitle">Proyecto</h2>
+                        <p class="text-muted mb-0" id="projectDetailClient">Cliente</p>
+                    </div>
+                    <div>
+                        <span class="badge badge-active" id="projectDetailStatus">Activo</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Project Info -->
+            <div class="row g-3 mb-4">
+                <div class="col-md-3">
+                    <div class="card bg-light h-100">
+                        <div class="card-body text-center">
+                            <small class="text-muted">Avance del Proyecto</small>
+                            <h4 class="mt-2 mb-3"><span id="currentProgress">0</span>%</h4>
+                            <div class="input-group">
+                                <input type="number" class="form-control form-control-sm" id="newProgress" min="0" max="100" placeholder="0-100">
+                                <button class="btn btn-sm btn-primary-custom" onclick="updateProgress()">
+                                    <i class="bi bi-check"></i>
+                                </button>
+                            </div>
                         </div>
-                        <div class="col-md-4">
-                            <select class="form-select" id="filterTaskStatus" onchange="filterTasks()">
-                                <option value="">Todos los estados</option>
-                                <option value="pending">Pendientes</option>
-                                <option value="in-progress">En Progreso</option>
-                                <option value="completed">Completadas</option>
-                            </select>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-light h-100">
+                        <div class="card-body text-center">
+                            <small class="text-muted">Tareas del Proyecto</small>
+                            <h4 class="mt-2 mb-0" id="projectTotalTasks">0</h4>
+                            <small class="text-muted">Total</small>
                         </div>
-                        <div class="col-md-4">
-                            <select class="form-select" id="filterTaskPriority" onchange="filterTasks()">
-                                <option value="">Todas las prioridades</option>
-                                <option value="low">Baja</option>
-                                <option value="medium">Media</option>
-                                <option value="high">Alta</option>
-                                <option value="urgent">Urgente</option>
-                            </select>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-light h-100">
+                        <div class="card-body text-center">
+                            <small class="text-muted">Tareas Completadas</small>
+                            <h4 class="mt-2 mb-0 text-success" id="projectCompletedTasks">0</h4>
+                            <small class="text-muted">Finalizadas</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-light h-100">
+                        <div class="card-body text-center">
+                            <small class="text-muted">Presupuesto</small>
+                            <h4 class="mt-2 mb-0" id="projectBudget">$0</h4>
+                            <small class="text-muted">Asignado</small>
                         </div>
                     </div>
                 </div>
             </div>
             
-            <!-- Tasks List -->
-            <div class="card shadow-sm" id="tasksListCard">
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-hover mb-0">
-                            <thead>
-                                <tr>
-                                    <th>Tarea</th>
-                                    <th>Asignado a</th>
-                                    <th>Prioridad</th>
-                                    <th>Estado</th>
-                                    <th>Fecha Límite</th>
-                                    <th class="text-center">Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tasksTable"></tbody>
-                        </table>
+            <!-- Tabs -->
+            <div class="mb-4">
+                <button class="tab-button active" onclick="showProjectTab('tasks')">
+                    <i class="bi bi-list-task me-2"></i>Tareas
+                </button>
+                <button class="tab-button" onclick="showProjectTab('evidences')">
+                    <i class="bi bi-camera me-2"></i>Evidencias
+                </button>
+                <button class="tab-button" onclick="showProjectTab('materials')">
+                    <i class="bi bi-box-seam me-2"></i>Materiales
+                </button>
+            </div>
+            
+            <!-- Tab: Tareas -->
+            <div id="tab-tasks" class="project-tab">
+                <div class="card shadow-sm mb-3">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0"><i class="bi bi-list-task me-2"></i>Tareas del Proyecto</h5>
+                            <button class="btn btn-primary-custom" onclick="openCreateTaskModal()">
+                                <i class="bi bi-plus-circle me-1"></i>Nueva Tarea
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div id="tasksList"></div>
+                <div id="emptyTasks" class="card shadow-sm text-center d-none">
+                    <div class="card-body py-5">
+                        <i class="bi bi-inbox display-1 text-muted mb-3"></i>
+                        <h5>Sin Tareas</h5>
+                        <p class="text-muted">Agrega la primera tarea del proyecto</p>
+                        <button class="btn btn-primary-custom" onclick="openCreateTaskModal()">
+                            <i class="bi bi-plus-circle me-1"></i>Crear Tarea
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Tab: Evidencias -->
+            <div id="tab-evidences" class="project-tab d-none">
+                <div class="card shadow-sm mb-3">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0"><i class="bi bi-camera me-2"></i>Evidencias del Proyecto</h5>
+                            <button class="btn btn-primary-custom" data-bs-toggle="modal" data-bs-target="#modalEvidence" onclick="openCreateEvidenceModal()">
+                                <i class="bi bi-camera me-1"></i>Subir Evidencia
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div id="evidencesList" class="row g-3"></div>
+                <div id="emptyEvidences" class="card shadow-sm text-center d-none">
+                    <div class="card-body py-5">
+                        <i class="bi bi-camera-fill display-1 text-muted mb-3"></i>
+                        <h5>Sin Evidencias</h5>
+                        <p class="text-muted">Sube fotos del avance del proyecto</p>
+                        <button class="btn btn-primary-custom" data-bs-toggle="modal" data-bs-target="#modalEvidence" onclick="openCreateEvidenceModal()">
+                            <i class="bi bi-camera me-1"></i>Subir Evidencia
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Tab: Materiales -->
+            <div id="tab-materials" class="project-tab d-none">
+                <div class="card shadow-sm mb-3">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0"><i class="bi bi-box-seam me-2"></i>Materiales del Proyecto</h5>
+                            <button class="btn btn-primary-custom" data-bs-toggle="modal" data-bs-target="#modalMaterial" onclick="openCreateMaterialModal()">
+                                <i class="bi bi-plus-circle me-1"></i>Registrar Material
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div id="materialsList" class="row g-3"></div>
+                <div id="emptyMaterials" class="card shadow-sm text-center d-none">
+                    <div class="card-body py-5">
+                        <i class="bi bi-box-seam display-1 text-muted mb-3"></i>
+                        <h5>Sin Materiales</h5>
+                        <p class="text-muted">Registra los materiales utilizados</p>
+                        <button class="btn btn-primary-custom" data-bs-toggle="modal" data-bs-target="#modalMaterial" onclick="openCreateMaterialModal()">
+                            <i class="bi bi-plus-circle me-1"></i>Registrar Material
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Sección de Evidencias -->
-        <div id="evidence" class="content-section d-none">
+        <!-- Sección de Notificaciones -->
+        <div id="notifications" class="content-section d-none">
             <div class="card shadow-sm mb-4">
-                <div class="card-body d-flex justify-content-between align-items-center flex-wrap">
+                <div class="card-body d-flex justify-content-between align-items-center">
                     <div>
-                        <h2 class="mb-1">Evidencias de Avance</h2>
-                        <p class="text-muted mb-0">Fotos y documentación del progreso del proyecto</p>
+                        <h2 class="mb-1">Problemas Reportados</h2>
+                        <p class="text-muted mb-0">Notificaciones de trabajadores</p>
                     </div>
-                    <button class="btn btn-primary-custom" data-bs-toggle="modal" data-bs-target="#modalEvidence" onclick="openCreateEvidenceModal()">
-                        <i class="bi bi-camera me-2"></i>Subir Evidencia
+                    <button class="btn btn-outline-secondary" onclick="markAllAsRead()">
+                        <i class="bi bi-check-all me-1"></i>Marcar todas como leídas
                     </button>
                 </div>
             </div>
             
-            <!-- Evidence Gallery -->
-            <div id="evidenceGallery" class="row g-3"></div>
+            <div id="notificationsList"></div>
             
-            <div id="emptyEvidence" class="card shadow-sm text-center d-none">
+            <div id="emptyNotifications" class="card shadow-sm text-center d-none">
                 <div class="card-body py-5">
-                    <i class="bi bi-camera-fill display-1 text-muted mb-3"></i>
-                    <h3>Sin Evidencias</h3>
-                    <p class="text-muted">Sube fotos y notas del avance del proyecto</p>
-                    <button class="btn btn-primary-custom mt-3" data-bs-toggle="modal" data-bs-target="#modalEvidence" onclick="openCreateEvidenceModal()">
-                        <i class="bi bi-camera me-2"></i>Subir Primera Evidencia
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Sección de Materiales -->
-        <div id="materials" class="content-section d-none">
-            <div class="card shadow-sm mb-4">
-                <div class="card-body d-flex justify-content-between align-items-center flex-wrap">
-                    <div>
-                        <h2 class="mb-1">Control de Materiales</h2>
-                        <p class="text-muted mb-0">Inventario de materiales utilizados en el proyecto</p>
-                    </div>
-                    <button class="btn btn-primary-custom" data-bs-toggle="modal" data-bs-target="#modalMaterial" onclick="openCreateMaterialModal()">
-                        <i class="bi bi-plus-circle me-2"></i>Registrar Material
-                    </button>
-                </div>
-            </div>
-            
-            <!-- Materials List -->
-            <div class="row g-3" id="materialsList"></div>
-            
-            <div id="emptyMaterials" class="card shadow-sm text-center d-none">
-                <div class="card-body py-5">
-                    <i class="bi bi-box-seam display-1 text-muted mb-3"></i>
-                    <h3>Sin Materiales Registrados</h3>
-                    <p class="text-muted">Comienza a registrar los materiales utilizados</p>
-                    <button class="btn btn-primary-custom mt-3" data-bs-toggle="modal" data-bs-target="#modalMaterial" onclick="openCreateMaterialModal()">
-                        <i class="bi bi-plus-circle me-2"></i>Registrar Primer Material
-                    </button>
+                    <i class="bi bi-bell-slash display-1 text-muted mb-3"></i>
+                    <h3>Sin Notificaciones</h3>
+                    <p class="text-muted">No hay problemas reportados</p>
                 </div>
             </div>
         </div>
@@ -564,7 +600,6 @@
                 </div>
             </div>
             
-            <!-- Attendance List -->
             <div class="card shadow-sm">
                 <div class="card-body">
                     <div class="table-responsive">
@@ -585,38 +620,8 @@
                 </div>
             </div>
         </div>
-
-        <!-- Sección de Alertas -->
-        <div id="alerts" class="content-section d-none">
-            <div class="card shadow-sm mb-4">
-                <div class="card-body d-flex justify-content-between align-items-center flex-wrap">
-                    <div>
-                        <h2 class="mb-1">Centro de Alertas</h2>
-                        <p class="text-muted mb-0">Notificaciones y alertas del sistema</p>
-                    </div>
-                    <button class="btn btn-outline-secondary" onclick="markAllAlertsAsRead()">
-                        <i class="bi bi-check-all me-2"></i>Marcar todas como leídas
-                    </button>
-                </div>
-            </div>
-            
-            <!-- Alerts List -->
-            <div class="card shadow-sm d-none" id="alertsListCard">
-                <div class="card-body" id="alertsList"></div>
-            </div>
-            
-            <div class="card shadow-sm text-center" id="emptyAlerts">
-                <div class="card-body py-5">
-                    <i class="bi bi-bell-slash display-1 text-muted mb-3"></i>
-                    <h3>Sin Alertas</h3>
-                    <p class="text-muted">No hay alertas pendientes en este momento</p>
-                </div>
-            </div>
-        </div>
     </div>
 
-    <!-- MODALES -->
-    
     <!-- Modal de Tarea -->
     <div class="modal fade" id="modalTask" tabindex="-1">
         <div class="modal-dialog modal-lg">
@@ -707,7 +712,6 @@
                         <div id="evidencePreview" class="mb-3 d-none">
                             <img id="evidencePreviewImg" class="img-fluid rounded" style="max-height: 300px;">
                         </div>
-                        <input type="hidden" id="evidenceId">
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
@@ -771,7 +775,6 @@
                             <label class="form-label">Notas</label>
                             <textarea class="form-control" id="materialNotes" rows="2"></textarea>
                         </div>
-                        <input type="hidden" id="materialId">
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
@@ -829,7 +832,25 @@
         </div>
     </div>
 
-    <!-- Alertas Personalizadas -->
+    <!-- Modal Ver Notificación -->
+    <div class="modal fade" id="modalNotification" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="bi bi-exclamation-triangle me-2"></i>Detalle del Problema
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="notificationContent"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Alertas -->
     <div class="custom-alert-overlay" id="customAlert">
         <div class="custom-alert-box text-center">
             <div class="mb-3" id="alertIcon"></div>
@@ -839,7 +860,7 @@
         </div>
     </div>
 
-    <!-- Toast Notifications -->
+    <!-- Toast -->
     <div class="toast-container position-fixed bottom-0 end-0 p-3">
         <div id="toast" class="toast" role="alert">
             <div class="toast-header">
@@ -854,16 +875,13 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
 // ============== VARIABLES GLOBALES ==============
-let tasks = [];
-let evidences = [];
-let materials = [];
-let attendance = [];
-let alerts = [];
-let workers = [];
 let projects = [];
+let workers = [];
+let problems = [];
+let attendance = [];
+let currentSupervisorId = 1; // En producción vendría de la sesión
+let currentProjectId = null;
 let currentTaskId = null;
-let currentEvidenceId = null;
-let currentMaterialId = null;
 
 // ============== INICIALIZACIÓN ==============
 document.addEventListener('DOMContentLoaded', () => {
@@ -871,21 +889,14 @@ document.addEventListener('DOMContentLoaded', () => {
     updateUI();
     setTodayDate();
     
-    // Preview de imagen de evidencia
     document.getElementById('evidencePhoto').addEventListener('change', previewEvidencePhoto);
-    
-    // Verificar alertas cada 30 segundos
-    setInterval(checkAlerts, 30000);
 });
 
 function loadAllData() {
-    tasks = JSON.parse(localStorage.getItem('supervisor_tasks')) || [];
-    evidences = JSON.parse(localStorage.getItem('supervisor_evidences')) || [];
-    materials = JSON.parse(localStorage.getItem('supervisor_materials')) || [];
-    attendance = JSON.parse(localStorage.getItem('supervisor_attendance')) || [];
-    alerts = JSON.parse(localStorage.getItem('constructora_notifications')) || [];
-    workers = JSON.parse(localStorage.getItem('constructora_workers')) || [];
     projects = JSON.parse(localStorage.getItem('constructora_projects')) || [];
+    workers = JSON.parse(localStorage.getItem('constructora_workers')) || [];
+    problems = JSON.parse(localStorage.getItem('worker_problems')) || [];
+    attendance = JSON.parse(localStorage.getItem('supervisor_attendance')) || [];
 }
 
 function saveData(key, data) {
@@ -910,159 +921,287 @@ function showSection(id) {
         }
     });
     
-    if (id === 'tasks') loadTasks();
-    if (id === 'evidence') loadEvidences();
-    if (id === 'materials') loadMaterials();
+    if (id === 'projects') loadProjects();
+    if (id === 'notifications') loadNotifications();
     if (id === 'attendance') loadAttendance();
-    if (id === 'alerts') loadAlerts();
+}
+
+function showProjectTab(tabName) {
+    document.querySelectorAll('.project-tab').forEach(t => t.classList.add('d-none'));
+    document.querySelectorAll('.tab-button').forEach(b => b.classList.remove('active'));
+    
+    document.getElementById(`tab-${tabName}`).classList.remove('d-none');
+    event.target.classList.add('active');
+    
+    if (tabName === 'tasks') loadProjectTasks();
+    if (tabName === 'evidences') loadProjectEvidences();
+    if (tabName === 'materials') loadProjectMaterials();
 }
 
 // ============== UI UPDATES ==============
 function updateUI() {
     updateStats();
-    updateRecentActivity();
-    updateAlertsBadge();
+    updateRecentProjects();
+    updateNotificationBadge();
 }
 
 function updateStats() {
-    const totalTasks = tasks.length;
-    const completedTasks = tasks.filter(t => t.status === 'completed').length;
-    const todayAttendance = attendance.filter(a => a.date === new Date().toISOString().split('T')[0]);
-    const presentToday = todayAttendance.filter(a => a.status === 'present').length;
-    const pendingAlerts = alerts.filter(a => !a.read).length;
+    const myProjects = projects.filter(p => p.supervisorId === currentSupervisorId);
+    const totalProjects = myProjects.length;
     
+    let totalTasks = 0;
+    let completedTasks = 0;
+    myProjects.forEach(p => {
+        if (p.tasks) {
+            totalTasks += p.tasks.length;
+            completedTasks += p.tasks.filter(t => t.status === 'completed').length;
+        }
+    });
+    
+    const myNotifications = problems.filter(p => {
+        const project = projects.find(pr => pr.id === p.projectId);
+        return project && project.supervisorId === currentSupervisorId;
+    });
+    const unreadNotifications = myNotifications.filter(n => !n.read).length;
+    
+    document.getElementById('totalProjects').textContent = totalProjects;
     document.getElementById('totalTasks').textContent = totalTasks;
     document.getElementById('completedTasks').textContent = completedTasks;
-    document.getElementById('presentWorkers').textContent = presentToday;
-    document.getElementById('pendingAlerts').textContent = pendingAlerts;
+    document.getElementById('pendingNotifications').textContent = unreadNotifications;
 }
 
-function updateRecentActivity() {
-    const container = document.getElementById('recentActivity');
+function updateNotificationBadge() {
+    const myNotifications = problems.filter(p => {
+        const project = projects.find(pr => pr.id === p.projectId);
+        return project && project.supervisorId === currentSupervisorId;
+    });
+    const unreadCount = myNotifications.filter(n => !n.read).length;
     
-    const recentTasks = tasks.slice(-3).reverse();
-    const recentEvidences = evidences.slice(-2).reverse();
+    const badge = document.getElementById('notificationBadge');
+    if (unreadCount > 0) {
+        badge.textContent = unreadCount;
+        badge.style.display = 'inline-block';
+    } else {
+        badge.style.display = 'none';
+    }
+}
+
+function updateRecentProjects() {
+    const container = document.getElementById('recentProjects');
+    const myProjects = projects.filter(p => p.supervisorId === currentSupervisorId);
+    
+    if (myProjects.length === 0) {
+        container.innerHTML = '<p class="text-muted text-center py-4">No hay proyectos asignados</p>';
+        return;
+    }
     
     let html = '';
-    
-    if (recentTasks.length > 0) {
-        html += '<h6 class="mb-3"><i class="bi bi-list-task me-2"></i>Tareas Recientes</h6>';
-        recentTasks.forEach(task => {
-            const worker = workers.find(w => w.id === task.workerId);
-            html += `
-                <div class="alert alert-info mb-2">
-                    <div class="d-flex justify-content-between">
-                        <div>
-                            <strong>${task.title}</strong><br>
-                            <small>Asignado a: ${worker?.name || 'N/A'}</small>
+    myProjects.slice(0, 3).forEach(project => {
+        const progress = project.progress || 0;
+        html += `
+            <div class="project-card card mb-3" onclick="viewProjectDetail(${project.id})">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <h6 class="mb-0">${project.name}</h6>
+                        ${getStatusBadge(project.status)}
+                    </div>
+                    <p class="text-muted small mb-2">Cliente: ${project.client}</p>
+                    <div class="d-flex align-items-center">
+                        <span class="me-2">${progress}%</span>
+                        <div class="progress flex-grow-1" style="height:8px">
+                            <div class="progress-bar" style="width:${progress}%"></div>
                         </div>
-                        ${getTaskStatusBadge(task.status)}
                     </div>
                 </div>
-            `;
-        });
-    }
-    
-    if (recentEvidences.length > 0) {
-        html += '<h6 class="mb-3 mt-4"><i class="bi bi-camera me-2"></i>Evidencias Recientes</h6>';
-        recentEvidences.forEach(evidence => {
-            html += `
-                <div class="alert alert-success mb-2">
-                    <strong>${evidence.title}</strong><br>
-                    <small>${new Date(evidence.date).toLocaleDateString('es-MX')}</small>
-                </div>
-            `;
-        });
-    }
-    
-    if (html === '') {
-        html = '<p class="text-muted text-center py-4">No hay actividad reciente</p>';
-    }
+            </div>
+        `;
+    });
     
     container.innerHTML = html;
 }
 
-function updateAlertsBadge() {
-    const unreadCount = alerts.filter(a => !a.read).length;
-    const badge = document.getElementById('alertsBadge');
+// ============== PROYECTOS ==============
+function loadProjects() {
+    const myProjects = projects.filter(p => p.supervisorId === currentSupervisorId);
+    const container = document.getElementById('projectsList');
+    const empty = document.getElementById('emptyProjects');
     
-    if (unreadCount > 0) {
-        badge.textContent = unreadCount;
-        badge.classList.remove('d-none');
+    if (myProjects.length === 0) {
+        container.innerHTML = '';
+        empty.classList.remove('d-none');
     } else {
-        badge.classList.add('d-none');
+        empty.classList.add('d-none');
+        container.innerHTML = '';
+        
+        myProjects.forEach(project => {
+            const col = document.createElement('div');
+            col.className = 'col-md-6';
+            const progress = project.progress || 0;
+            const tasksCount = project.tasks ? project.tasks.length : 0;
+            const completedTasksCount = project.tasks ? project.tasks.filter(t => t.status === 'completed').length : 0;
+            
+            col.innerHTML = `
+                <div class="project-card card shadow-sm" onclick="viewProjectDetail(${project.id})">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div>
+                                <h5 class="mb-1">${project.name}</h5>
+                                <small class="text-muted">${project.client}</small>
+                            </div>
+                            ${getStatusBadge(project.status)}
+                        </div>
+                        <div class="mb-3">
+                            <small class="text-muted d-block mb-1">Avance del Proyecto</small>
+                            <div class="d-flex align-items-center">
+                                <span class="me-2"><strong>${progress}%</strong></span>
+                                <div class="progress flex-grow-1" style="height:10px">
+                                    <div class="progress-bar" style="width:${progress}%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between text-muted small">
+                            <span><i class="bi bi-list-task me-1"></i>${tasksCount} tareas</span>
+                            <span><i class="bi bi-check-circle me-1"></i>${completedTasksCount} completadas</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            container.appendChild(col);
+        });
     }
+}
+
+function viewProjectDetail(id) {
+    const project = projects.find(p => p.id === id);
+    if (!project) return;
+    
+    currentProjectId = id;
+    
+    document.getElementById('projectDetailTitle').textContent = project.name;
+    document.getElementById('projectDetailClient').textContent = 'Cliente: ' + project.client;
+    document.getElementById('projectDetailStatus').textContent = getStatusText(project.status);
+    document.getElementById('projectDetailStatus').className = 'badge ' + getStatusBadgeClass(project.status);
+    
+    const progress = project.progress || 0;
+    document.getElementById('currentProgress').textContent = progress;
+    document.getElementById('newProgress').value = '';
+    
+    const budget = parseFloat(project.budget) || 0;
+    document.getElementById('projectBudget').textContent = '$' + budget.toLocaleString('es-MX');
+    
+    const totalTasks = project.tasks ? project.tasks.length : 0;
+    const completedTasks = project.tasks ? project.tasks.filter(t => t.status === 'completed').length : 0;
+    document.getElementById('projectTotalTasks').textContent = totalTasks;
+    document.getElementById('projectCompletedTasks').textContent = completedTasks;
+    
+    showSection('project-detail');
+    showProjectTab('tasks');
+}
+
+function updateProgress() {
+    const newProgress = parseInt(document.getElementById('newProgress').value);
+    
+    if (isNaN(newProgress) || newProgress < 0 || newProgress > 100) {
+        showToast('warning', 'Atención', 'El avance debe estar entre 0 y 100');
+        return;
+    }
+    
+    const project = projects.find(p => p.id === currentProjectId);
+    if (!project) return;
+    
+    project.progress = newProgress;
+    saveData('constructora_projects', projects);
+    
+    document.getElementById('currentProgress').textContent = newProgress;
+    document.getElementById('newProgress').value = '';
+    
+    showToast('success', 'Actualizado', 'Avance del proyecto actualizado');
+    updateUI();
+    loadProjects();
 }
 
 // ============== TAREAS ==============
-function loadTasks() {
-    const select = document.getElementById('taskWorker');
-    select.innerHTML = '<option value="">Seleccionar trabajador...</option>';
-    workers.filter(w => w.role === 'trabajador').forEach(w => {
-        select.innerHTML += `<option value="${w.id}">${w.name}</option>`;
-    });
+function loadProjectTasks() {
+    const project = projects.find(p => p.id === currentProjectId);
+    if (!project) return;
     
-    filterTasks();
-}
-
-function filterTasks() {
-    const search = document.getElementById('searchTask').value.toLowerCase();
-    const status = document.getElementById('filterTaskStatus').value;
-    const priority = document.getElementById('filterTaskPriority').value;
+    const container = document.getElementById('tasksList');
+    const empty = document.getElementById('emptyTasks');
     
-    const filtered = tasks.filter(t => {
-        const matchSearch = t.title.toLowerCase().includes(search) || t.description.toLowerCase().includes(search);
-        const matchStatus = !status || t.status === status;
-        const matchPriority = !priority || t.priority === priority;
-        return matchSearch && matchStatus && matchPriority;
-    });
-    
-    const tbody = document.getElementById('tasksTable');
-    tbody.innerHTML = '';
-    
-    if (filtered.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted py-4">No se encontraron tareas</td></tr>';
-    } else {
-        filtered.forEach(t => {
-            const worker = workers.find(w => w.id === t.workerId);
-            const row = document.createElement('tr');
-            row.style.cursor = 'pointer';
-            row.onclick = () => viewTask(t.id);
-            
-            row.innerHTML = `
-                <td><strong>${t.title}</strong><br><small class="text-muted">${t.description.substring(0, 50)}...</small></td>
-                <td>${worker?.name || 'N/A'}</td>
-                <td>${getTaskPriorityBadge(t.priority)}</td>
-                <td>${getTaskStatusBadge(t.status)}</td>
-                <td>${new Date(t.deadline).toLocaleDateString('es-MX')}</td>
-                <td onclick="event.stopPropagation()" class="text-center">
-                    ${t.status !== 'completed' ? `
-                    <button class="btn btn-sm btn-success btn-action me-1" onclick="markTaskCompleted(${t.id})" title="Marcar completada">
-                        <i class="bi bi-check-circle"></i>
-                    </button>
-                    ` : ''}
-                    <button class="btn btn-sm btn-warning btn-action me-1" onclick="editTask(${t.id})" title="Editar">
-                        <i class="bi bi-pencil"></i>
-                    </button>
-                    <button class="btn btn-sm btn-danger btn-action" onclick="confirmDeleteTask(${t.id})" title="Eliminar">
-                        <i class="bi bi-trash"></i>
-                    </button>
-                </td>
-            `;
-            
-            tbody.appendChild(row);
-        });
+    if (!project.tasks || project.tasks.length === 0) {
+        container.innerHTML = '';
+        empty.classList.remove('d-none');
+        return;
     }
+    
+    empty.classList.add('d-none');
+    container.innerHTML = '';
+    
+    project.tasks.forEach(task => {
+        const worker = workers.find(w => w.id === task.workerId);
+        const card = document.createElement('div');
+        card.className = `task-item card mb-2 ${task.status === 'completed' ? 'completed' : ''}`;
+        
+        card.innerHTML = `
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div class="flex-grow-1">
+                        <h6 class="mb-1">${task.title}</h6>
+                        <small class="text-muted">${task.description}</small>
+                        <div class="mt-2">
+                            <small class="text-muted">Asignado a: <strong>${worker?.name || 'N/A'}</strong></small>
+                        </div>
+                    </div>
+                    <div class="d-flex gap-2 align-items-start">
+                        ${getTaskPriorityBadge(task.priority)}
+                        ${getTaskStatusBadge(task.status)}
+                        <div class="btn-group">
+                            <button class="btn btn-sm btn-warning btn-action" onclick="event.stopPropagation(); editTask(${task.id})" title="Editar">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                            <button class="btn btn-sm btn-danger btn-action" onclick="event.stopPropagation(); confirmDeleteTask(${task.id})" title="Eliminar">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-2">
+                    <small class="text-muted">
+                        <i class="bi bi-calendar me-1"></i>Vence: ${new Date(task.deadline).toLocaleDateString('es-MX')}
+                    </small>
+                </div>
+            </div>
+        `;
+        
+        container.appendChild(card);
+    });
 }
 
 function openCreateTaskModal() {
     document.getElementById('modalTaskTitle').innerHTML = '<i class="bi bi-plus-circle me-2"></i>Nueva Tarea';
     document.getElementById('taskForm').reset();
     currentTaskId = null;
+    
+    const project = projects.find(p => p.id === currentProjectId);
+    const select = document.getElementById('taskWorker');
+    select.innerHTML = '<option value="">Seleccionar trabajador...</option>';
+    
+    const projectWorkers = workers.filter(w => w.projectId === currentProjectId && w.role === 'trabajador');
+    projectWorkers.forEach(w => {
+        select.innerHTML += `<option value="${w.id}">${w.name}</option>`;
+    });
+    
+    new bootstrap.Modal(document.getElementById('modalTask')).show();
 }
 
 function saveTask(e) {
     e.preventDefault();
+    
+    const project = projects.find(p => p.id === currentProjectId);
+    if (!project) return;
+    
+    if (!project.tasks) project.tasks = [];
     
     const data = {
         title: document.getElementById('taskTitle').value,
@@ -1075,23 +1214,27 @@ function saveTask(e) {
     };
     
     if (currentTaskId) {
-        const index = tasks.findIndex(t => t.id === currentTaskId);
-        tasks[index] = { ...tasks[index], ...data };
+        const index = project.tasks.findIndex(t => t.id === currentTaskId);
+        project.tasks[index] = { ...project.tasks[index], ...data };
         showToast('success', 'Actualizado', 'Tarea actualizada correctamente');
     } else {
         data.id = Date.now();
-        tasks.push(data);
+        project.tasks.push(data);
         showToast('success', 'Creado', 'Tarea creada correctamente');
     }
     
-    saveData('supervisor_tasks', tasks);
+    saveData('constructora_projects', projects);
     bootstrap.Modal.getInstance(document.getElementById('modalTask')).hide();
+    loadProjectTasks();
     updateUI();
-    filterTasks();
+    viewProjectDetail(currentProjectId);
 }
 
 function editTask(id) {
-    const task = tasks.find(t => t.id === id);
+    const project = projects.find(p => p.id === currentProjectId);
+    if (!project || !project.tasks) return;
+    
+    const task = project.tasks.find(t => t.id === id);
     if (!task) return;
     
     currentTaskId = id;
@@ -1103,47 +1246,21 @@ function editTask(id) {
     document.getElementById('taskDeadline').value = task.deadline;
     document.getElementById('taskDescription').value = task.description;
     
+    const select = document.getElementById('taskWorker');
+    select.innerHTML = '<option value="">Seleccionar trabajador...</option>';
+    const projectWorkers = workers.filter(w => w.projectId === currentProjectId && w.role === 'trabajador');
+    projectWorkers.forEach(w => {
+        select.innerHTML += `<option value="${w.id}">${w.name}</option>`;
+    });
+    
     new bootstrap.Modal(document.getElementById('modalTask')).show();
 }
 
-function viewTask(id) {
-    const task = tasks.find(t => t.id === id);
-    if (!task) return;
-    
-    const worker = workers.find(w => w.id === task.workerId);
-    
-    showCustomAlert(
-        '<i class="bi bi-list-task text-primary" style="font-size:60px"></i>',
-        task.title,
-        `<div class="text-start">
-            <p><strong>Descripción:</strong> ${task.description}</p>
-            <p><strong>Asignado a:</strong> ${worker?.name || 'N/A'}</p>
-            <p><strong>Prioridad:</strong> ${getTaskPriorityBadge(task.priority)}</p>
-            <p><strong>Estado:</strong> ${getTaskStatusBadge(task.status)}</p>
-            <p><strong>Fecha límite:</strong> ${new Date(task.deadline).toLocaleDateString('es-MX')}</p>
-        </div>`,
-        [
-            { text: 'Cerrar', class: 'btn-secondary', action: closeCustomAlert },
-            { text: 'Editar', class: 'btn-primary-custom', action: () => { closeCustomAlert(); editTask(id); } }
-        ]
-    );
-}
-
-function markTaskCompleted(id) {
-    const task = tasks.find(t => t.id === id);
-    if (!task) return;
-    
-    task.status = 'completed';
-    task.completedAt = new Date().toISOString();
-    
-    saveData('supervisor_tasks', tasks);
-    showToast('success', 'Completada', 'Tarea marcada como completada');
-    filterTasks();
-    updateUI();
-}
-
 function confirmDeleteTask(id) {
-    const task = tasks.find(t => t.id === id);
+    const project = projects.find(p => p.id === currentProjectId);
+    if (!project || !project.tasks) return;
+    
+    const task = project.tasks.find(t => t.id === id);
     if (!task) return;
     
     showCustomAlert(
@@ -1158,12 +1275,17 @@ function confirmDeleteTask(id) {
 }
 
 function deleteTask(id) {
-    tasks = tasks.filter(t => t.id !== id);
-    saveData('supervisor_tasks', tasks);
+    const project = projects.find(p => p.id === currentProjectId);
+    if (!project || !project.tasks) return;
+    
+    project.tasks = project.tasks.filter(t => t.id !== id);
+    
+    saveData('constructora_projects', projects);
     closeCustomAlert();
     showToast('success', 'Eliminado', 'Tarea eliminada correctamente');
-    filterTasks();
+    loadProjectTasks();
     updateUI();
+    viewProjectDetail(currentProjectId);
 }
 
 function getTaskStatusBadge(status) {
@@ -1185,45 +1307,75 @@ function getTaskPriorityBadge(priority) {
     return badges[priority] || badges.medium;
 }
 
+function getStatusBadge(status) {
+    const badges = {
+        'active': '<span class="badge badge-active">Activo</span>',
+        'paused': '<span class="badge badge-paused">Pausado</span>',
+        'completed': '<span class="badge badge-completed">Completado</span>'
+    };
+    return badges[status] || badges.active;
+}
+
+function getStatusText(status) {
+    const texts = {
+        'active': 'Activo',
+        'paused': 'Pausado',
+        'completed': 'Completado'
+    };
+    return texts[status] || 'Activo';
+}
+
+function getStatusBadgeClass(status) {
+    const classes = {
+        'active': 'badge-active',
+        'paused': 'badge-paused',
+        'completed': 'badge-completed'
+    };
+    return classes[status] || 'badge-active';
+}
+
 // ============== EVIDENCIAS ==============
-function loadEvidences() {
-    const gallery = document.getElementById('evidenceGallery');
-    const empty = document.getElementById('emptyEvidence');
+function loadProjectEvidences() {
+    const project = projects.find(p => p.id === currentProjectId);
+    if (!project) return;
     
-    if (evidences.length === 0) {
-        gallery.innerHTML = '';
+    const container = document.getElementById('evidencesList');
+    const empty = document.getElementById('emptyEvidences');
+    
+    if (!project.evidences || project.evidences.length === 0) {
+        container.innerHTML = '';
         empty.classList.remove('d-none');
-    } else {
-        empty.classList.add('d-none');
-        gallery.innerHTML = '';
-        
-        evidences.forEach(evidence => {
-            const col = document.createElement('div');
-            col.className = 'col-md-4';
-            col.innerHTML = `
-                <div class="card shadow-sm h-100">
-                    <img src="${evidence.photo}" class="card-img-top" style="height:200px;object-fit:cover;" alt="${evidence.title}">
-                    <div class="card-body">
-                        <h6 class="card-title">${evidence.title}</h6>
-                        <p class="card-text text-muted small">${evidence.description || 'Sin descripción'}</p>
-                        <small class="text-muted"><i class="bi bi-calendar me-1"></i>${new Date(evidence.date).toLocaleDateString('es-MX')}</small>
-                    </div>
-                    <div class="card-footer bg-white">
-                        <button class="btn btn-sm btn-danger w-100" onclick="confirmDeleteEvidence(${evidence.id})">
-                            <i class="bi bi-trash me-1"></i>Eliminar
-                        </button>
-                    </div>
-                </div>
-            `;
-            gallery.appendChild(col);
-        });
+        return;
     }
+    
+    empty.classList.add('d-none');
+    container.innerHTML = '';
+    
+    project.evidences.forEach(evidence => {
+        const col = document.createElement('div');
+        col.className = 'col-md-4';
+        col.innerHTML = `
+            <div class="card shadow-sm h-100 evidence-card">
+                <img src="${evidence.photo}" class="card-img-top" style="height:200px;object-fit:cover;" alt="${evidence.title}">
+                <div class="card-body">
+                    <h6 class="card-title">${evidence.title}</h6>
+                    <p class="card-text text-muted small">${evidence.description || 'Sin descripción'}</p>
+                    <small class="text-muted"><i class="bi bi-calendar me-1"></i>${new Date(evidence.date).toLocaleDateString('es-MX')}</small>
+                </div>
+                <div class="card-footer bg-white">
+                    <button class="btn btn-sm btn-danger w-100" onclick="confirmDeleteEvidence(${evidence.id})">
+                        <i class="bi bi-trash me-1"></i>Eliminar
+                    </button>
+                </div>
+            </div>
+        `;
+        container.appendChild(col);
+    });
 }
 
 function openCreateEvidenceModal() {
     document.getElementById('evidenceForm').reset();
     document.getElementById('evidencePreview').classList.add('d-none');
-    currentEvidenceId = null;
 }
 
 function previewEvidencePhoto(e) {
@@ -1240,6 +1392,11 @@ function previewEvidencePhoto(e) {
 
 function saveEvidence(e) {
     e.preventDefault();
+    
+    const project = projects.find(p => p.id === currentProjectId);
+    if (!project) return;
+    
+    if (!project.evidences) project.evidences = [];
     
     const fileInput = document.getElementById('evidencePhoto');
     const file = fileInput.files[0];
@@ -1259,13 +1416,12 @@ function saveEvidence(e) {
             date: new Date().toISOString()
         };
         
-        evidences.push(data);
-        saveData('supervisor_evidences', evidences);
+        project.evidences.push(data);
+        saveData('constructora_projects', projects);
         
         bootstrap.Modal.getInstance(document.getElementById('modalEvidence')).hide();
         showToast('success', 'Subido', 'Evidencia subida correctamente');
-        loadEvidences();
-        updateUI();
+        loadProjectEvidences();
     };
     reader.readAsDataURL(file);
 }
@@ -1283,80 +1439,90 @@ function confirmDeleteEvidence(id) {
 }
 
 function deleteEvidence(id) {
-    evidences = evidences.filter(e => e.id !== id);
-    saveData('supervisor_evidences', evidences);
+    const project = projects.find(p => p.id === currentProjectId);
+    if (!project || !project.evidences) return;
+    
+    project.evidences = project.evidences.filter(e => e.id !== id);
+    saveData('constructora_projects', projects);
     closeCustomAlert();
     showToast('success', 'Eliminado', 'Evidencia eliminada correctamente');
-    loadEvidences();
-    updateUI();
+    loadProjectEvidences();
 }
 
 // ============== MATERIALES ==============
-function loadMaterials() {
-    const list = document.getElementById('materialsList');
+function loadProjectMaterials() {
+    const project = projects.find(p => p.id === currentProjectId);
+    if (!project) return;
+    
+    const container = document.getElementById('materialsList');
     const empty = document.getElementById('emptyMaterials');
     
-    if (materials.length === 0) {
-        list.innerHTML = '';
+    if (!project.materials || project.materials.length === 0) {
+        container.innerHTML = '';
         empty.classList.remove('d-none');
-    } else {
-        empty.classList.add('d-none');
-        list.innerHTML = '';
+        return;
+    }
+    
+    empty.classList.add('d-none');
+    container.innerHTML = '';
+    
+    project.materials.forEach(material => {
+        const col = document.createElement('div');
+        col.className = 'col-md-6';
+        const totalCost = (parseFloat(material.quantity) * parseFloat(material.cost || 0)).toFixed(2);
         
-        materials.forEach(material => {
-            const col = document.createElement('div');
-            col.className = 'col-md-6';
-            const totalCost = (parseFloat(material.quantity) * parseFloat(material.cost || 0)).toFixed(2);
-            
-            col.innerHTML = `
-                <div class="card material-item shadow-sm">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-start mb-2">
-                            <h6 class="mb-0">${material.name}</h6>
-                            <button class="btn btn-sm btn-danger btn-action" onclick="confirmDeleteMaterial(${material.id})">
-                                <i class="bi bi-trash"></i>
-                            </button>
+        col.innerHTML = `
+            <div class="card material-item shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <h6 class="mb-0">${material.name}</h6>
+                        <button class="btn btn-sm btn-danger btn-action" onclick="confirmDeleteMaterial(${material.id})">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </div>
+                    <div class="row g-2 mt-2">
+                        <div class="col-6">
+                            <small class="text-muted">Cantidad:</small><br>
+                            <strong>${material.quantity} ${material.unit}</strong>
                         </div>
-                        <div class="row g-2 mt-2">
-                            <div class="col-6">
-                                <small class="text-muted">Cantidad:</small><br>
-                                <strong>${material.quantity} ${material.unit}</strong>
-                            </div>
-                            <div class="col-6">
-                                <small class="text-muted">Costo Total:</small><br>
-                                <strong class="text-primary">$${parseFloat(totalCost).toLocaleString('es-MX')}</strong>
-                            </div>
-                            ${material.supplier ? `
-                            <div class="col-12">
-                                <small class="text-muted">Proveedor:</small><br>
-                                <span>${material.supplier}</span>
-                            </div>
-                            ` : ''}
-                            ${material.notes ? `
-                            <div class="col-12">
-                                <small class="text-muted">Notas:</small><br>
-                                <span class="small">${material.notes}</span>
-                            </div>
-                            ` : ''}
-                            <div class="col-12">
-                                <small class="text-muted"><i class="bi bi-calendar me-1"></i>${new Date(material.date).toLocaleDateString('es-MX')}</small>
-                            </div>
+                        <div class="col-6">
+                            <small class="text-muted">Costo Total:</small><br>
+                            <strong class="text-primary">$${parseFloat(totalCost).toLocaleString('es-MX')}</strong>
+                        </div>
+                        ${material.supplier ? `
+                        <div class="col-12">
+                            <small class="text-muted">Proveedor:</small><br>
+                            <span>${material.supplier}</span>
+                        </div>
+                        ` : ''}
+                        ${material.notes ? `
+                        <div class="col-12">
+                            <small class="text-muted">Notas:</small><br>
+                            <span class="small">${material.notes}</span>
+                        </div>
+                        ` : ''}
+                        <div class="col-12">
+                            <small class="text-muted"><i class="bi bi-calendar me-1"></i>${new Date(material.date).toLocaleDateString('es-MX')}</small>
                         </div>
                     </div>
                 </div>
-            `;
-            list.appendChild(col);
-        });
-    }
+            </div>
+        `;
+        container.appendChild(col);
+    });
 }
 
 function openCreateMaterialModal() {
     document.getElementById('materialForm').reset();
-    currentMaterialId = null;
 }
 
 function saveMaterial(e) {
     e.preventDefault();
+    
+    const project = projects.find(p => p.id === currentProjectId);
+    if (!project) return;
+    
+    if (!project.materials) project.materials = [];
     
     const data = {
         id: Date.now(),
@@ -1369,13 +1535,12 @@ function saveMaterial(e) {
         date: new Date().toISOString()
     };
     
-    materials.push(data);
-    saveData('supervisor_materials', materials);
+    project.materials.push(data);
+    saveData('constructora_projects', projects);
     
     bootstrap.Modal.getInstance(document.getElementById('modalMaterial')).hide();
     showToast('success', 'Registrado', 'Material registrado correctamente');
-    loadMaterials();
-    updateUI();
+    loadProjectMaterials();
 }
 
 function confirmDeleteMaterial(id) {
@@ -1391,12 +1556,131 @@ function confirmDeleteMaterial(id) {
 }
 
 function deleteMaterial(id) {
-    materials = materials.filter(m => m.id !== id);
-    saveData('supervisor_materials', materials);
+    const project = projects.find(p => p.id === currentProjectId);
+    if (!project || !project.materials) return;
+    
+    project.materials = project.materials.filter(m => m.id !== id);
+    saveData('constructora_projects', projects);
     closeCustomAlert();
     showToast('success', 'Eliminado', 'Material eliminado correctamente');
-    loadMaterials();
+    loadProjectMaterials();
+}
+
+// ============== NOTIFICACIONES ==============
+function loadNotifications() {
+    const myNotifications = problems.filter(p => {
+        const project = projects.find(pr => pr.id === p.projectId);
+        return project && project.supervisorId === currentSupervisorId;
+    });
+    
+    const container = document.getElementById('notificationsList');
+    const empty = document.getElementById('emptyNotifications');
+    
+    if (myNotifications.length === 0) {
+        container.innerHTML = '';
+        empty.classList.remove('d-none');
+        return;
+    }
+    
+    empty.classList.add('d-none');
+    container.innerHTML = '';
+    
+    myNotifications.reverse().forEach(notification => {
+        const worker = workers.find(w => w.id === notification.workerId);
+        const project = projects.find(p => p.id === notification.projectId);
+        
+        const card = document.createElement('div');
+        card.className = `notification-item card mb-3 ${notification.read ? 'read' : ''}`;
+        card.onclick = () => viewNotificationDetail(notification.id);
+        
+        card.innerHTML = `
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <h6 class="mb-0">${notification.title}</h6>
+                    ${getTaskPriorityBadge(notification.priority)}
+                </div>
+                <p class="text-muted small mb-2">${notification.description}</p>
+                <div class="d-flex justify-content-between align-items-center">
+                    <small class="text-muted">
+                        <i class="bi bi-person me-1"></i>${worker?.name || 'Desconocido'} - ${project?.name || 'N/A'}
+                    </small>
+                    <small class="text-muted">
+                        <i class="bi bi-calendar me-1"></i>${new Date(notification.createdAt).toLocaleDateString('es-MX')}
+                    </small>
+                </div>
+            </div>
+        `;
+        
+        container.appendChild(card);
+    });
+}
+
+function viewNotificationDetail(id) {
+    const notification = problems.find(p => p.id === id);
+    if (!notification) return;
+    
+    const worker = workers.find(w => w.id === notification.workerId);
+    const project = projects.find(p => p.id === notification.projectId);
+    
+    const content = document.getElementById('notificationContent');
+    content.innerHTML = `
+        <div class="mb-3">
+            <label class="text-muted small">Título</label>
+            <h6>${notification.title}</h6>
+        </div>
+        <div class="mb-3">
+            <label class="text-muted small">Categoría</label>
+            <p>${notification.category}</p>
+        </div>
+        <div class="mb-3">
+            <label class="text-muted small">Prioridad</label>
+            <div>${getTaskPriorityBadge(notification.priority)}</div>
+        </div>
+        ${notification.location ? `
+        <div class="mb-3">
+            <label class="text-muted small">Ubicación</label>
+            <p>${notification.location}</p>
+        </div>
+        ` : ''}
+        <div class="mb-3">
+            <label class="text-muted small">Descripción</label>
+            <p>${notification.description}</p>
+        </div>
+        <div class="mb-3">
+            <label class="text-muted small">Reportado por</label>
+            <p>${worker?.name || 'Desconocido'}</p>
+        </div>
+        <div class="mb-3">
+            <label class="text-muted small">Proyecto</label>
+            <p>${project?.name || 'N/A'}</p>
+        </div>
+        <div class="mb-3">
+            <label class="text-muted small">Fecha</label>
+            <p>${new Date(notification.createdAt).toLocaleString('es-MX')}</p>
+        </div>
+    `;
+    
+    // Marcar como leída
+    notification.read = true;
+    saveData('worker_problems', problems);
+    updateNotificationBadge();
     updateUI();
+    
+    new bootstrap.Modal(document.getElementById('modalNotification')).show();
+}
+
+function markAllAsRead() {
+    const myNotifications = problems.filter(p => {
+        const project = projects.find(pr => pr.id === p.projectId);
+        return project && project.supervisorId === currentSupervisorId;
+    });
+    
+    myNotifications.forEach(n => n.read = true);
+    saveData('worker_problems', problems);
+    updateNotificationBadge();
+    updateUI();
+    loadNotifications();
+    showToast('success', 'Actualizado', 'Todas las notificaciones marcadas como leídas');
 }
 
 // ============== ASISTENCIAS ==============
@@ -1405,7 +1689,9 @@ function loadAttendance() {
     const tbody = document.getElementById('attendanceTable');
     tbody.innerHTML = '';
     
-    const workersToShow = workers.filter(w => w.role === 'trabajador');
+    const myProjects = projects.filter(p => p.supervisorId === currentSupervisorId);
+    const myProjectIds = myProjects.map(p => p.id);
+    const workersToShow = workers.filter(w => w.role === 'trabajador' && myProjectIds.includes(w.projectId));
     
     workersToShow.forEach(worker => {
         const project = projects.find(p => p.id === worker.projectId);
@@ -1461,7 +1747,6 @@ function saveAttendance(e) {
         notes: document.getElementById('attendanceNotes').value
     };
     
-    // Remover registro anterior si existe
     attendance = attendance.filter(a => !(a.workerId === workerId && a.date === date));
     attendance.push(data);
     
@@ -1469,134 +1754,15 @@ function saveAttendance(e) {
     bootstrap.Modal.getInstance(document.getElementById('modalAttendance')).hide();
     showToast('success', 'Registrado', 'Asistencia registrada correctamente');
     loadAttendance();
-    updateUI();
 }
 
 function getAttendanceBadge(status) {
     const badges = {
-        'present': '<span class="badge attendance-present">Presente</span>',
-        'absent': '<span class="badge attendance-absent">Ausente</span>',
-        'late': '<span class="badge attendance-late">Retardo</span>'
+        'present': '<span class="badge" style="background:#dcfce7;color:#166534">Presente</span>',
+        'absent': '<span class="badge" style="background:#fee2e2;color:#991b1b">Ausente</span>',
+        'late': '<span class="badge" style="background:#fef3c7;color:#92400e">Retardo</span>'
     };
     return badges[status] || badges.present;
-}
-
-// ============== ALERTAS ==============
-function checkAlerts() {
-    // Verificar alertas de presupuesto
-    projects.forEach(project => {
-        const budget = parseFloat(project.budget) || 0;
-        const spent = parseFloat(project.spent) || 0;
-        const percentage = budget > 0 ? (spent / budget) * 100 : 0;
-        
-        if (percentage >= 90) {
-            const existingAlert = alerts.find(a => 
-                a.projectId === project.id && 
-                a.type === 'budget' && 
-                !a.read
-            );
-            
-            if (!existingAlert) {
-                const alert = {
-                    id: Date.now(),
-                    type: 'budget',
-                    projectId: project.id,
-                    title: '⚠️ Alerta de Presupuesto',
-                    message: `El proyecto "${project.name}" ha superado el ${percentage.toFixed(1)}% del presupuesto. Gasto: $${spent.toLocaleString('es-MX')} de $${budget.toLocaleString('es-MX')}`,
-                    date: new Date().toISOString(),
-                    read: false
-                };
-                alerts.push(alert);
-                saveData('constructora_notifications', alerts);
-            }
-        }
-    });
-    
-    updateAlertsBadge();
-}
-
-function loadAlerts() {
-    const container = document.getElementById('alertsList');
-    const listCard = document.getElementById('alertsListCard');
-    const empty = document.getElementById('emptyAlerts');
-    
-    if (alerts.length === 0) {
-        listCard.classList.add('d-none');
-        empty.classList.remove('d-none');
-    } else {
-        empty.classList.add('d-none');
-        listCard.classList.remove('d-none');
-        container.innerHTML = '';
-        
-        const sortedAlerts = [...alerts].sort((a, b) => new Date(b.date) - new Date(a.date));
-        
-        sortedAlerts.forEach(alert => {
-            const project = projects.find(p => p.id === alert.projectId);
-            const date = new Date(alert.date);
-            const formattedDate = date.toLocaleDateString('es-MX', { 
-                day: '2-digit', 
-                month: 'short', 
-                year: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit'
-            });
-            
-            let icon = '<i class="bi bi-info-circle-fill text-primary fs-4"></i>';
-            if (alert.type === 'budget') icon = '<i class="bi bi-exclamation-triangle-fill text-danger fs-4"></i>';
-            if (alert.type === 'problem') icon = '<i class="bi bi-exclamation-circle-fill text-warning fs-4"></i>';
-            
-            const div = document.createElement('div');
-            div.className = `card mb-3 alert-item ${alert.read ? 'read' : ''}`;
-            div.innerHTML = `
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-start mb-2">
-                        <div class="d-flex align-items-start flex-grow-1">
-                            <span class="me-3">${icon}</span>
-                            <div class="flex-grow-1">
-                                <h6 class="mb-1">${alert.title}</h6>
-                                <small class="text-muted">
-                                    ${project ? `<i class="bi bi-building me-1"></i>${project.name} • ` : ''}
-                                    <i class="bi bi-clock me-1"></i>${formattedDate}
-                                </small>
-                            </div>
-                        </div>
-                        ${!alert.read ? '<span class="badge bg-danger ms-2">Nueva</span>' : ''}
-                    </div>
-                    <p class="mb-2 ms-5">${alert.message}</p>
-                    ${!alert.read ? `
-                        <button class="btn btn-sm btn-outline-primary ms-5" onclick="markAlertAsRead(${alert.id})">
-                            <i class="bi bi-check me-1"></i>Marcar como leída
-                        </button>
-                    ` : ''}
-                </div>
-            `;
-            container.appendChild(div);
-        });
-    }
-}
-
-function markAlertAsRead(id) {
-    const alert = alerts.find(a => a.id === id);
-    if (alert) {
-        alert.read = true;
-        saveData('constructora_notifications', alerts);
-        loadAlerts();
-        updateAlertsBadge();
-        showToast('success', 'Actualizado', 'Alerta marcada como leída');
-    }
-}
-
-function markAllAlertsAsRead() {
-    if (alerts.length === 0) {
-        showToast('info', 'Información', 'No hay alertas para marcar');
-        return;
-    }
-    
-    alerts.forEach(a => a.read = true);
-    saveData('constructora_notifications', alerts);
-    loadAlerts();
-    updateAlertsBadge();
-    showToast('success', 'Completado', 'Todas las alertas marcadas como leídas');
 }
 
 // ============== UTILIDADES ==============
