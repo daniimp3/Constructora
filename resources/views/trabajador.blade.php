@@ -7,7 +7,6 @@
     <title>Dashboard - Trabajador</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
     <style>
@@ -15,8 +14,6 @@
             --primary: #0d273d;
             --secondary: #3e6985;
             --accent: #8aa7bc;
-            --light: #a6bed1;
-            --lighter: #cdd7df;
         }
         
         * { font-family: 'Poppins', sans-serif; }
@@ -41,7 +38,7 @@
         }
         
         .company-logo {
-            max-width: 80px;
+            max-width: 180px;
             height: auto;
             display: block;
             margin: 0 auto;
@@ -80,14 +77,12 @@
             border-left: 4px solid;
         }
         
-        .stat-card:hover {
-            transform: translateY(-5px);
-        }
+        .stat-card:hover { transform: translateY(-5px); }
         
         .stat-card.blue { border-color: #3b82f6; }
         .stat-card.green { border-color: #10b981; }
         .stat-card.yellow { border-color: #f59e0b; }
-        .stat-card.red { border-color: #ef4444; }
+        .stat-card.purple { border-color: #8b5cf6; }
         
         .btn-primary-custom {
             background: linear-gradient(135deg, var(--secondary), #5a8caf);
@@ -97,7 +92,6 @@
         
         .btn-primary-custom:hover {
             background: linear-gradient(135deg, #2d5166, var(--secondary));
-            color: white;
         }
         
         .btn-action {
@@ -109,17 +103,37 @@
         .badge-pending { background: #fef3c7; color: #92400e; }
         .badge-in-progress { background: #dbeafe; color: #1e40af; }
         .badge-completed { background: #dcfce7; color: #166534; }
-        
         .badge-low { background: #dbeafe; color: #1e40af; }
         .badge-medium { background: #fef3c7; color: #92400e; }
         .badge-high { background: #fed7aa; color: #9a3412; }
         .badge-urgent { background: #fee2e2; color: #991b1b; }
+        .badge-active { background: #dcfce7; color: #166534; }
         
-        .badge-materiales { background: #dbeafe; color: #1e40af; }
-        .badge-herramientas { background: #e0e7ff; color: #3730a3; }
-        .badge-seguridad { background: #fee2e2; color: #991b1b; }
-        .badge-calidad { background: #fef3c7; color: #92400e; }
-        .badge-otro { background: #f3f4f6; color: #374151; }
+        .project-card {
+            border-left: 4px solid var(--accent);
+            transition: all 0.3s;
+        }
+        
+        .project-card:hover {
+            border-left-color: var(--secondary);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transform: translateY(-3px);
+        }
+        
+        .task-item {
+            border-left: 3px solid #cbd5e1;
+            transition: all 0.3s;
+        }
+        
+        .task-item:hover {
+            border-left-color: var(--secondary);
+            background: #f8fafc;
+        }
+        
+        .task-item.completed {
+            opacity: 0.7;
+            border-left-color: #10b981;
+        }
         
         .custom-alert-overlay {
             display: none;
@@ -152,17 +166,8 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .progress {
-            height: 10px;
-            border-radius: 5px;
-            overflow: hidden;
-        }
-
-        .modal-content {
-            border-radius: 15px;
-            border: none;
-        }
-
+        .progress { height: 10px; border-radius: 5px; }
+        .modal-content { border-radius: 15px; border: none; }
         .modal-header {
             background: var(--secondary);
             color: white;
@@ -172,37 +177,6 @@
         .form-control:focus, .form-select:focus {
             border-color: var(--secondary);
             box-shadow: 0 0 0 0.2rem rgba(62, 105, 133, 0.25);
-        }
-
-        .task-card {
-            border-left: 4px solid var(--accent);
-            transition: all 0.3s;
-            cursor: pointer;
-        }
-
-        .task-card:hover {
-            border-left-color: var(--secondary);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            transform: translateX(5px);
-        }
-
-        .task-card.completed {
-            opacity: 0.7;
-            border-left-color: #10b981;
-        }
-
-        .problem-card {
-            border-left: 4px solid #ef4444;
-            transition: all 0.3s;
-        }
-
-        .problem-card:hover {
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-
-        .problem-card.resolved {
-            border-left-color: #10b981;
-            opacity: 0.7;
         }
         
         @media (max-width: 768px) {
@@ -214,13 +188,11 @@
 <body>
     <!-- Sidebar -->
     <div class="sidebar">
-        <!-- Logo Section -->
         <div class="logo-container">
             <img src="{{ asset('img/logo.png') }}" alt="Logo Empresa" class="company-logo">
             <p class="company-subtitle mb-0">Panel de Trabajador</p>
         </div>
         
-        <!-- User Profile -->
         <div class="bg-dark bg-opacity-25 m-3 p-3 rounded">
             <div class="d-flex align-items-center">
                 <div class="bg-gradient rounded-circle d-flex align-items-center justify-content-center text-white fw-bold" 
@@ -234,11 +206,15 @@
             </div>
         </div>
         
-        <!-- Navigation -->
         <ul class="nav flex-column px-3 mt-3">
             <li class="nav-item">
                 <a class="nav-link active" href="#" onclick="showSection('overview');return false">
                     <i class="bi bi-graph-up me-2"></i>Vista General
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" onclick="showSection('projects');return false">
+                    <i class="bi bi-building me-2"></i>Mis Proyectos
                 </a>
             </li>
             <li class="nav-item">
@@ -247,13 +223,8 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#" onclick="showSection('report-problem');return false">
+                <a class="nav-link" href="#" onclick="showSection('report');return false">
                     <i class="bi bi-exclamation-triangle me-2"></i>Reportar Problema
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#" onclick="showSection('my-reports');return false">
-                    <i class="bi bi-clipboard-check me-2"></i>Mis Reportes
                 </a>
             </li>
             <li class="nav-item">
@@ -274,23 +245,23 @@
         <div id="overview" class="content-section">
             <div class="card shadow-sm mb-4">
                 <div class="card-body">
-                    <h2 class="mb-1">¡Bienvenido!</h2>
-                    <p class="text-muted mb-0">Gestiona tus tareas y reporta problemas</p>
+                    <h2 class="mb-1">Bienvenido de Nuevo</h2>
+                    <p class="text-muted mb-0">Resumen de tu actividad</p>
                 </div>
             </div>
             
             <!-- Stats Cards -->
             <div class="row g-3 mb-4">
                 <div class="col-md-3">
-                    <div class="card stat-card blue shadow-sm h-100" onclick="showSection('tasks')">
+                    <div class="card stat-card blue shadow-sm h-100">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-start mb-2">
                                 <div>
-                                    <h3 class="mb-0 fw-bold" id="totalTasks">0</h3>
-                                    <small class="text-muted">Tareas Asignadas</small>
+                                    <h3 class="mb-0 fw-bold" id="totalProjects">0</h3>
+                                    <small class="text-muted">Proyectos</small>
                                 </div>
                                 <div class="bg-primary bg-opacity-10 rounded p-2">
-                                    <i class="bi bi-list-task fs-4 text-primary"></i>
+                                    <i class="bi bi-building fs-4 text-primary"></i>
                                 </div>
                             </div>
                         </div>
@@ -302,11 +273,11 @@
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-start mb-2">
                                 <div>
-                                    <h3 class="mb-0 fw-bold" id="pendingTasks">0</h3>
-                                    <small class="text-muted">Pendientes</small>
+                                    <h3 class="mb-0 fw-bold" id="totalTasks">0</h3>
+                                    <small class="text-muted">Tareas Asignadas</small>
                                 </div>
                                 <div class="bg-warning bg-opacity-10 rounded p-2">
-                                    <i class="bi bi-clock fs-4 text-warning"></i>
+                                    <i class="bi bi-list-task fs-4 text-warning"></i>
                                 </div>
                             </div>
                         </div>
@@ -330,15 +301,15 @@
                 </div>
                 
                 <div class="col-md-3">
-                    <div class="card stat-card red shadow-sm h-100" onclick="showSection('my-reports')">
+                    <div class="card stat-card purple shadow-sm h-100">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-start mb-2">
                                 <div>
-                                    <h3 class="mb-0 fw-bold" id="totalReports">0</h3>
-                                    <small class="text-muted">Problemas Reportados</small>
+                                    <h3 class="mb-0 fw-bold" id="pendingTasks">0</h3>
+                                    <small class="text-muted">Pendientes</small>
                                 </div>
                                 <div class="bg-danger bg-opacity-10 rounded p-2">
-                                    <i class="bi bi-exclamation-triangle fs-4 text-danger"></i>
+                                    <i class="bi bi-clock fs-4 text-danger"></i>
                                 </div>
                             </div>
                         </div>
@@ -346,90 +317,130 @@
                 </div>
             </div>
             
-            <!-- Quick Actions -->
-            <div class="row g-3 mb-4">
-                <div class="col-md-6">
-                    <div class="card shadow-sm h-100">
-                        <div class="card-body text-center">
-                            <i class="bi bi-list-check fs-1 text-primary mb-3"></i>
-                            <h5>Mis Tareas</h5>
-                            <p class="text-muted small">Consulta y actualiza tus tareas asignadas</p>
-                            <button class="btn btn-primary-custom" onclick="showSection('tasks')">
-                                <i class="bi bi-arrow-right me-2"></i>Ver Tareas
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="col-md-6">
-                    <div class="card shadow-sm h-100">
-                        <div class="card-body text-center">
-                            <i class="bi bi-exclamation-triangle-fill fs-1 text-danger mb-3"></i>
-                            <h5>Reportar Problema</h5>
-                            <p class="text-muted small">Notifica problemas en el proyecto</p>
-                            <button class="btn btn-primary-custom" onclick="showSection('report-problem')">
-                                <i class="bi bi-plus-circle me-2"></i>Reportar
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             <!-- Recent Tasks -->
             <div class="card shadow-sm">
                 <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">Tareas Recientes</h5>
+                    <h5 class="mb-0">Mis Tareas Recientes</h5>
                     <button class="btn btn-sm btn-outline-secondary" onclick="showSection('tasks')">
                         Ver todas
                     </button>
                 </div>
-                <div class="card-body" id="recentTasksOverview">
+                <div class="card-body" id="recentTasks">
                     <p class="text-muted text-center py-4">No hay tareas asignadas</p>
                 </div>
             </div>
         </div>
 
-        <!-- Sección de Mis Tareas -->
-        <div id="tasks" class="content-section d-none">
-            <div class="card shadow-sm mb-4">
-                <div class="card-body d-flex justify-content-between align-items-center flex-wrap">
-                    <div>
-                        <h2 class="mb-1">Mis Tareas Asignadas</h2>
-                        <p class="text-muted mb-0">Consulta y actualiza el estado de tus tareas</p>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Filters -->
+        <!-- Sección de Proyectos -->
+        <div id="projects" class="content-section d-none">
             <div class="card shadow-sm mb-4">
                 <div class="card-body">
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <input type="text" class="form-control" id="searchTask" placeholder="🔍 Buscar tarea..." onkeyup="filterTasks()">
+                    <h2 class="mb-1">Mis Proyectos</h2>
+                    <p class="text-muted mb-0">Proyectos en los que estás trabajando</p>
+                </div>
+            </div>
+            
+            <div id="projectsList" class="row g-3"></div>
+            
+            <div id="emptyProjects" class="card shadow-sm text-center d-none">
+                <div class="card-body py-5">
+                    <i class="bi bi-building display-1 text-muted mb-3"></i>
+                    <h3>Sin Proyectos Asignados</h3>
+                    <p class="text-muted">No tienes proyectos asignados en este momento</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Detalle del Proyecto -->
+        <div id="project-detail" class="content-section d-none">
+            <div class="card shadow-sm mb-4">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                    <div>
+                        <button class="btn btn-sm btn-outline-secondary mb-2" onclick="showSection('projects')">
+                            <i class="bi bi-arrow-left me-1"></i>Volver a Proyectos
+                        </button>
+                        <h2 class="mb-1" id="projectDetailTitle">Proyecto</h2>
+                        <p class="text-muted mb-0" id="projectDetailClient">Cliente</p>
+                    </div>
+                    <div>
+                        <span class="badge badge-active">Activo</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Project Info -->
+            <div class="row g-3 mb-4">
+                <div class="col-md-4">
+                    <div class="card bg-light h-100">
+                        <div class="card-body text-center">
+                            <small class="text-muted">Avance del Proyecto</small>
+                            <h4 class="mt-2 mb-0"><span id="projectDetailProgress">0</span>%</h4>
+                            <div class="progress mt-2" style="height:8px">
+                                <div class="progress-bar bg-success" id="projectDetailProgressBar" style="width:0%"></div>
+                            </div>
                         </div>
-                        <div class="col-md-3">
-                            <select class="form-select" id="filterTaskStatus" onchange="filterTasks()">
-                                <option value="">Todos los estados</option>
-                                <option value="pending">Pendientes</option>
-                                <option value="in-progress">En Progreso</option>
-                                <option value="completed">Completadas</option>
-                            </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card bg-light h-100">
+                        <div class="card-body text-center">
+                            <small class="text-muted">Mis Tareas</small>
+                            <h4 class="mt-2 mb-0" id="projectDetailMyTasks">0</h4>
+                            <small class="text-muted">Asignadas a mí</small>
                         </div>
-                        <div class="col-md-3">
-                            <select class="form-select" id="filterTaskPriority" onchange="filterTasks()">
-                                <option value="">Todas las prioridades</option>
-                                <option value="low">Baja</option>
-                                <option value="medium">Media</option>
-                                <option value="high">Alta</option>
-                                <option value="urgent">Urgente</option>
-                            </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card bg-light h-100">
+                        <div class="card-body text-center">
+                            <small class="text-muted">Completadas</small>
+                            <h4 class="mt-2 mb-0 text-success" id="projectDetailCompletedTasks">0</h4>
+                            <small class="text-muted">Por mí</small>
                         </div>
                     </div>
                 </div>
             </div>
             
-            <!-- Tasks List -->
-            <div id="tasksList" class="row g-3"></div>
+            <!-- Tareas del Proyecto -->
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0"><i class="bi bi-list-task me-2"></i>Mis Tareas en este Proyecto</h5>
+                </div>
+                <div class="card-body">
+                    <div id="projectTasksList"></div>
+                    <div id="emptyProjectTasks" class="text-center py-4 d-none">
+                        <i class="bi bi-inbox display-1 text-muted mb-3"></i>
+                        <h5>Sin Tareas</h5>
+                        <p class="text-muted">No tienes tareas asignadas en este proyecto</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sección de Tareas -->
+        <div id="tasks" class="content-section d-none">
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h2 class="mb-1">Mis Tareas</h2>
+                    <p class="text-muted mb-0">Tareas asignadas a ti</p>
+                </div>
+            </div>
+            
+            <div class="row g-3 mb-3">
+                <div class="col-md-6">
+                    <input type="text" class="form-control" id="searchTask" placeholder="🔍 Buscar tarea..." onkeyup="filterTasks()">
+                </div>
+                <div class="col-md-6">
+                    <select class="form-select" id="filterTaskStatus" onchange="filterTasks()">
+                        <option value="">Todos los estados</option>
+                        <option value="pending">Pendientes</option>
+                        <option value="in-progress">En Progreso</option>
+                        <option value="completed">Completadas</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div id="tasksList"></div>
             
             <div id="emptyTasks" class="card shadow-sm text-center d-none">
                 <div class="card-body py-5">
@@ -441,142 +452,86 @@
         </div>
 
         <!-- Sección de Reportar Problema -->
-        <div id="report-problem" class="content-section d-none">
+        <div id="report" class="content-section d-none">
             <div class="card shadow-sm mb-4">
                 <div class="card-body">
                     <h2 class="mb-1">Reportar Problema</h2>
-                    <p class="text-muted mb-0">Notifica cualquier problema o incidencia en el proyecto</p>
+                    <p class="text-muted mb-0">Notifica a tu supervisor sobre cualquier inconveniente</p>
                 </div>
             </div>
             
-            <!-- Report Form -->
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <form id="problemForm" onsubmit="saveProblem(event)">
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <label class="form-label">Título del Problema *</label>
-                                <input type="text" class="form-control" id="problemTitle" required placeholder="Ej: Falta de materiales">
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Categoría *</label>
-                                <select class="form-select" id="problemCategory" required>
-                                    <option value="">Seleccionar...</option>
-                                    <option value="materiales">Materiales</option>
-                                    <option value="herramientas">Herramientas</option>
-                                    <option value="seguridad">Seguridad</option>
-                                    <option value="calidad">Calidad</option>
-                                    <option value="otro">Otro</option>
-                                </select>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Prioridad *</label>
-                                <select class="form-select" id="problemPriority" required>
-                                    <option value="low">Baja</option>
-                                    <option value="medium" selected>Media</option>
-                                    <option value="high">Alta</option>
-                                    <option value="urgent">Urgente</option>
-                                </select>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Ubicación</label>
-                                <input type="text" class="form-control" id="problemLocation" placeholder="Ej: Área de construcción, Piso 2">
-                            </div>
-                            <div class="col-12">
-                                <label class="form-label">Descripción Detallada *</label>
-                                <textarea class="form-control" id="problemDescription" rows="4" required placeholder="Describe el problema con el mayor detalle posible..."></textarea>
-                            </div>
-                            <div class="col-12">
-                                <div class="alert alert-info">
-                                    <i class="bi bi-info-circle me-2"></i>
-                                    <strong>Nota:</strong> Este reporte será enviado automáticamente al supervisor y al administrador del proyecto.
+            <div class="row">
+                <div class="col-lg-8 mx-auto">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <form id="problemForm" onsubmit="submitProblem(event)">
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label">Proyecto *</label>
+                                        <select class="form-select" id="problemProject" required>
+                                            <option value="">Seleccionar proyecto...</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Categoría *</label>
+                                        <select class="form-select" id="problemCategory" required>
+                                            <option value="">Seleccionar...</option>
+                                            <option value="Material">Falta de Material</option>
+                                            <option value="Herramienta">Problema con Herramienta</option>
+                                            <option value="Seguridad">Seguridad</option>
+                                            <option value="Clima">Clima</option>
+                                            <option value="Personal">Personal</option>
+                                            <option value="Otro">Otro</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Prioridad *</label>
+                                        <select class="form-select" id="problemPriority" required>
+                                            <option value="low">Baja</option>
+                                            <option value="medium" selected>Media</option>
+                                            <option value="high">Alta</option>
+                                            <option value="urgent">Urgente</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Ubicación</label>
+                                        <input type="text" class="form-control" id="problemLocation" placeholder="Ej: Piso 2 - Área norte">
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label">Título del Problema *</label>
+                                        <input type="text" class="form-control" id="problemTitle" required placeholder="Resumen breve del problema">
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label">Descripción Detallada *</label>
+                                        <textarea class="form-control" id="problemDescription" rows="5" required placeholder="Describe el problema con detalle..."></textarea>
+                                    </div>
                                 </div>
+                                <div class="mt-4">
+                                    <button type="submit" class="btn btn-primary-custom">
+                                        <i class="bi bi-send me-2"></i>Enviar Reporte
+                                    </button>
+                                    <button type="reset" class="btn btn-secondary ms-2">
+                                        <i class="bi bi-x-circle me-2"></i>Limpiar
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    
+                    <div class="card shadow-sm mt-3">
+                        <div class="card-body">
+                            <h6 class="mb-3"><i class="bi bi-clock-history me-2"></i>Mis Reportes Recientes</h6>
+                            <div id="myRecentProblems">
+                                <p class="text-muted small text-center">No hay reportes</p>
                             </div>
                         </div>
-                        <div class="mt-4 d-flex gap-2">
-                            <button type="submit" class="btn btn-primary-custom">
-                                <i class="bi bi-send me-2"></i>Enviar Reporte
-                            </button>
-                            <button type="button" class="btn btn-outline-secondary" onclick="document.getElementById('problemForm').reset()">
-                                <i class="bi bi-x-circle me-2"></i>Limpiar
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-
-        <!-- Sección de Mis Reportes -->
-        <div id="my-reports" class="content-section d-none">
-            <div class="card shadow-sm mb-4">
-                <div class="card-body d-flex justify-content-between align-items-center flex-wrap">
-                    <div>
-                        <h2 class="mb-1">Mis Reportes de Problemas</h2>
-                        <p class="text-muted mb-0">Historial de problemas que has reportado</p>
                     </div>
-                    <button class="btn btn-primary-custom" onclick="showSection('report-problem')">
-                        <i class="bi bi-plus-circle me-2"></i>Nuevo Reporte
-                    </button>
-                </div>
-            </div>
-            
-            <!-- Filter -->
-            <div class="card shadow-sm mb-4">
-                <div class="card-body">
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <input type="text" class="form-control" id="searchReport" placeholder="🔍 Buscar reporte..." onkeyup="filterReports()">
-                        </div>
-                        <div class="col-md-6">
-                            <select class="form-select" id="filterReportStatus" onchange="filterReports()">
-                                <option value="">Todos los estados</option>
-                                <option value="pending">Pendientes</option>
-                                <option value="in-progress">En Proceso</option>
-                                <option value="resolved">Resueltos</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Reports List -->
-            <div id="reportsList"></div>
-            
-            <div id="emptyReports" class="card shadow-sm text-center d-none">
-                <div class="card-body py-5">
-                    <i class="bi bi-clipboard-check display-1 text-muted mb-3"></i>
-                    <h3>Sin Reportes</h3>
-                    <p class="text-muted">No has reportado problemas aún</p>
-                    <button class="btn btn-primary-custom mt-3" onclick="showSection('report-problem')">
-                        <i class="bi bi-plus-circle me-2"></i>Reportar Primer Problema
-                    </button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Modal de Detalle de Tarea -->
-    <div class="modal fade" id="modalTaskDetail" tabindex="-1">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">
-                        <i class="bi bi-list-task me-2"></i>Detalle de la Tarea
-                    </h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body" id="taskDetailContent"></div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                    <button type="button" class="btn btn-success" id="btnMarkCompleted" onclick="markTaskCompleted()">
-                        <i class="bi bi-check-circle me-2"></i>Marcar Completada
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Alertas Personalizadas -->
+    <!-- Alertas -->
     <div class="custom-alert-overlay" id="customAlert">
         <div class="custom-alert-box text-center">
             <div class="mb-3" id="alertIcon"></div>
@@ -586,7 +541,7 @@
         </div>
     </div>
 
-    <!-- Toast Notifications -->
+    <!-- Toast -->
     <div class="toast-container position-fixed bottom-0 end-0 p-3">
         <div id="toast" class="toast" role="alert">
             <div class="toast-header">
@@ -601,20 +556,29 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
 // ============== VARIABLES GLOBALES ==============
-let tasks = [];
+let projects = [];
+let workers = [];
 let problems = [];
-let currentWorkerId = 1; // En producción, vendría de la sesión del usuario
-let currentTaskId = null;
+let currentWorkerId = 101; // En producción vendría de la sesión
+let currentWorker = null;
+let currentProjectId = null;
 
 // ============== INICIALIZACIÓN ==============
 document.addEventListener('DOMContentLoaded', () => {
     loadAllData();
+    loadCurrentWorker();
     updateUI();
+    loadProblemProjects();
 });
 
 function loadAllData() {
-    tasks = JSON.parse(localStorage.getItem('supervisor_tasks')) || [];
+    projects = JSON.parse(localStorage.getItem('constructora_projects')) || [];
+    workers = JSON.parse(localStorage.getItem('constructora_workers')) || [];
     problems = JSON.parse(localStorage.getItem('worker_problems')) || [];
+}
+
+function loadCurrentWorker() {
+    currentWorker = workers.find(w => w.id === currentWorkerId);
 }
 
 function saveData(key, data) {
@@ -634,59 +598,92 @@ function showSection(id) {
         }
     });
     
+    if (id === 'projects') loadProjects();
     if (id === 'tasks') loadTasks();
-    if (id === 'my-reports') loadReports();
+    if (id === 'report') loadMyRecentProblems();
 }
 
 // ============== UI UPDATES ==============
 function updateUI() {
     updateStats();
-    updateRecentTasksOverview();
+    updateRecentTasks();
 }
 
 function updateStats() {
-    const myTasks = tasks.filter(t => t.workerId === currentWorkerId);
-    const totalTasks = myTasks.length;
-    const pendingTasks = myTasks.filter(t => t.status === 'pending').length;
-    const completedTasks = myTasks.filter(t => t.status === 'completed').length;
-    const totalReports = problems.filter(p => p.workerId === currentWorkerId).length;
+    if (!currentWorker) return;
     
+    const myProjects = projects.filter(p => p.id === currentWorker.projectId);
+    const totalProjects = myProjects.length;
+    
+    let myTasks = [];
+    myProjects.forEach(project => {
+        if (project.tasks) {
+            const workerTasks = project.tasks.filter(t => t.workerId === currentWorkerId);
+            myTasks = myTasks.concat(workerTasks);
+        }
+    });
+    
+    const totalTasks = myTasks.length;
+    const completedTasks = myTasks.filter(t => t.status === 'completed').length;
+    const pendingTasks = myTasks.filter(t => t.status === 'pending').length;
+    
+    document.getElementById('totalProjects').textContent = totalProjects;
     document.getElementById('totalTasks').textContent = totalTasks;
-    document.getElementById('pendingTasks').textContent = pendingTasks;
     document.getElementById('completedTasks').textContent = completedTasks;
-    document.getElementById('totalReports').textContent = totalReports;
+    document.getElementById('pendingTasks').textContent = pendingTasks;
 }
 
-function updateRecentTasksOverview() {
-    const container = document.getElementById('recentTasksOverview');
-    const myTasks = tasks.filter(t => t.workerId === currentWorkerId);
+function updateRecentTasks() {
+    const container = document.getElementById('recentTasks');
+    
+    if (!currentWorker) {
+        container.innerHTML = '<p class="text-muted text-center py-4">No hay tareas asignadas</p>';
+        return;
+    }
+    
+    const myProjects = projects.filter(p => p.id === currentWorker.projectId);
+    let myTasks = [];
+    
+    myProjects.forEach(project => {
+        if (project.tasks) {
+            const workerTasks = project.tasks.filter(t => t.workerId === currentWorkerId).map(task => ({
+                ...task,
+                projectName: project.name,
+                projectId: project.id
+            }));
+            myTasks = myTasks.concat(workerTasks);
+        }
+    });
     
     if (myTasks.length === 0) {
         container.innerHTML = '<p class="text-muted text-center py-4">No hay tareas asignadas</p>';
         return;
     }
     
-    const recentTasks = myTasks.slice(-3).reverse();
-    let html = '';
+    myTasks.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     
-    recentTasks.forEach(task => {
+    let html = '';
+    myTasks.slice(0, 3).forEach(task => {
         html += `
-            <div class="task-card card mb-2 ${task.status === 'completed' ? 'completed' : ''}" onclick="viewTaskDetail(${task.id})">
+            <div class="task-item card mb-2 ${task.status === 'completed' ? 'completed' : ''}">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-start">
-                        <div class="flex-grow-1">
+                        <div>
                             <h6 class="mb-1">${task.title}</h6>
-                            <small class="text-muted">${task.description.substring(0, 60)}...</small>
+                            <small class="text-muted">${task.projectName}</small>
                         </div>
                         <div class="d-flex gap-2">
                             ${getTaskPriorityBadge(task.priority)}
                             ${getTaskStatusBadge(task.status)}
                         </div>
                     </div>
-                    <div class="mt-2">
+                    <div class="mt-2 d-flex justify-content-between align-items-center">
                         <small class="text-muted">
                             <i class="bi bi-calendar me-1"></i>Vence: ${new Date(task.deadline).toLocaleDateString('es-MX')}
                         </small>
+                        <button class="btn btn-sm btn-outline-primary" onclick="changeTaskStatus(${task.projectId}, ${task.id})">
+                            <i class="bi bi-pencil"></i> Cambiar Estado
+                        </button>
                     </div>
                 </div>
             </div>
@@ -696,66 +693,53 @@ function updateRecentTasksOverview() {
     container.innerHTML = html;
 }
 
-// ============== TAREAS ==============
-function loadTasks() {
-    filterTasks();
-}
-
-function filterTasks() {
-    const search = document.getElementById('searchTask').value.toLowerCase();
-    const status = document.getElementById('filterTaskStatus').value;
-    const priority = document.getElementById('filterTaskPriority').value;
+// ============== PROYECTOS ==============
+function loadProjects() {
+    if (!currentWorker) return;
     
-    const myTasks = tasks.filter(t => t.workerId === currentWorkerId);
+    const myProjects = projects.filter(p => p.id === currentWorker.projectId);
+    const container = document.getElementById('projectsList');
+    const empty = document.getElementById('emptyProjects');
     
-    const filtered = myTasks.filter(t => {
-        const matchSearch = t.title.toLowerCase().includes(search) || t.description.toLowerCase().includes(search);
-        const matchStatus = !status || t.status === status;
-        const matchPriority = !priority || t.priority === priority;
-        return matchSearch && matchStatus && matchPriority;
-    });
-    
-    const container = document.getElementById('tasksList');
-    const empty = document.getElementById('emptyTasks');
-    
-    if (filtered.length === 0) {
+    if (myProjects.length === 0) {
         container.innerHTML = '';
         empty.classList.remove('d-none');
     } else {
         empty.classList.add('d-none');
         container.innerHTML = '';
         
-        filtered.forEach(task => {
+        myProjects.forEach(project => {
             const col = document.createElement('div');
             col.className = 'col-md-6';
-            
-            const daysLeft = Math.ceil((new Date(task.deadline) - new Date()) / (1000 * 60 * 60 * 24));
-            const urgencyClass = daysLeft < 0 ? 'text-danger' : daysLeft <= 3 ? 'text-warning' : 'text-muted';
-            const urgencyText = daysLeft < 0 ? '¡Vencida!' : daysLeft === 0 ? 'Vence hoy' : daysLeft === 1 ? 'Vence mañana' : `${daysLeft} días restantes`;
+            const progress = project.progress || 0;
+            const myTasks = project.tasks ? project.tasks.filter(t => t.workerId === currentWorkerId) : [];
+            const myCompletedTasks = myTasks.filter(t => t.status === 'completed');
             
             col.innerHTML = `
-                <div class="task-card card shadow-sm ${task.status === 'completed' ? 'completed' : ''}" onclick="viewTaskDetail(${task.id})">
+                <div class="project-card card shadow-sm" onclick="viewProjectDetail(${project.id})" style="cursor:pointer;">
                     <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-start mb-2">
-                            <h6 class="mb-0">${task.title}</h6>
-                            ${task.status !== 'completed' ? `
-                                <button class="btn btn-sm btn-success btn-action" onclick="event.stopPropagation(); quickMarkCompleted(${task.id})" title="Marcar completada">
-                                    <i class="bi bi-check-circle"></i>
-                                </button>
-                            ` : '<i class="bi bi-check-circle-fill text-success fs-4"></i>'}
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div>
+                                <h5 class="mb-1">${project.name}</h5>
+                                <small class="text-muted">${project.client}</small>
+                            </div>
+                            <span class="badge badge-active">Activo</span>
                         </div>
-                        <p class="text-muted small mb-2">${task.description}</p>
-                        <div class="d-flex gap-2 flex-wrap mb-2">
-                            ${getTaskPriorityBadge(task.priority)}
-                            ${getTaskStatusBadge(task.status)}
+                        <div class="mb-3">
+                            <small class="text-muted d-block mb-1">Avance del Proyecto</small>
+                            <div class="d-flex align-items-center">
+                                <span class="me-2"><strong>${progress}%</strong></span>
+                                <div class="progress flex-grow-1" style="height:10px">
+                                    <div class="progress-bar bg-success" style="width:${progress}%"></div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <small class="text-muted">
-                                <i class="bi bi-calendar me-1"></i>${new Date(task.deadline).toLocaleDateString('es-MX')}
-                            </small>
-                            <small class="${urgencyClass} fw-bold">
-                                ${urgencyText}
-                            </small>
+                        <div class="d-flex justify-content-between text-muted small">
+                            <span><i class="bi bi-list-task me-1"></i>${myTasks.length} mis tareas</span>
+                            <span><i class="bi bi-check-circle me-1"></i>${myCompletedTasks.length} completadas</span>
+                        </div>
+                        <div class="text-center mt-3">
+                            <small class="text-primary"><i class="bi bi-arrow-right-circle me-1"></i>Clic para ver detalles</small>
                         </div>
                     </div>
                 </div>
@@ -766,104 +750,296 @@ function filterTasks() {
     }
 }
 
-function viewTaskDetail(id) {
-    const task = tasks.find(t => t.id === id);
-    if (!task) return;
+function viewProjectDetail(projectId) {
+    const project = projects.find(p => p.id === projectId);
+    if (!project) return;
     
-    currentTaskId = id;
-    const daysLeft = Math.ceil((new Date(task.deadline) - new Date()) / (1000 * 60 * 60 * 24));
-    const urgencyClass = daysLeft < 0 ? 'text-danger' : daysLeft <= 3 ? 'text-warning' : 'text-success';
+    currentProjectId = projectId;
     
-    const content = document.getElementById('taskDetailContent');
-    content.innerHTML = `
-        <div class="row g-3">
-            <div class="col-12">
-                <h4 class="mb-3">${task.title}</h4>
-            </div>
-            <div class="col-md-6">
-                <div class="card bg-light">
-                    <div class="card-body">
-                        <small class="text-muted d-block mb-1">Estado</small>
+    document.getElementById('projectDetailTitle').textContent = project.name;
+    document.getElementById('projectDetailClient').textContent = 'Cliente: ' + project.client;
+    
+    const progress = project.progress || 0;
+    document.getElementById('projectDetailProgress').textContent = progress;
+    document.getElementById('projectDetailProgressBar').style.width = progress + '%';
+    
+    const myTasks = project.tasks ? project.tasks.filter(t => t.workerId === currentWorkerId) : [];
+    const myCompletedTasks = myTasks.filter(t => t.status === 'completed');
+    
+    document.getElementById('projectDetailMyTasks').textContent = myTasks.length;
+    document.getElementById('projectDetailCompletedTasks').textContent = myCompletedTasks.length;
+    
+    const tasksList = document.getElementById('projectTasksList');
+    const emptyTasks = document.getElementById('emptyProjectTasks');
+    
+    if (myTasks.length === 0) {
+        tasksList.innerHTML = '';
+        emptyTasks.classList.remove('d-none');
+    } else {
+        emptyTasks.classList.add('d-none');
+        tasksList.innerHTML = '';
+        
+        myTasks.forEach(task => {
+            const taskCard = document.createElement('div');
+            taskCard.className = `task-item card mb-3 ${task.status === 'completed' ? 'completed' : ''}`;
+            
+            taskCard.innerHTML = `
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <div class="flex-grow-1">
+                            <h5 class="mb-1">${task.title}</h5>
+                            <p class="text-muted mb-2">${task.description}</p>
+                        </div>
+                        <div class="d-flex gap-2">
+                            ${getTaskPriorityBadge(task.priority)}
+                            ${getTaskStatusBadge(task.status)}
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mt-3">
+                        <small class="text-muted">
+                            <i class="bi bi-calendar me-1"></i>Vence: ${new Date(task.deadline).toLocaleDateString('es-MX')}
+                        </small>
+                        <button class="btn btn-sm btn-primary-custom" onclick="changeTaskStatus(${projectId}, ${task.id})">
+                            <i class="bi bi-pencil me-1"></i>Cambiar Estado
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            tasksList.appendChild(taskCard);
+        });
+    }
+    
+    showSection('project-detail');
+}
+
+// ============== TAREAS ==============
+function loadTasks() {
+    if (!currentWorker) return;
+    
+    const myProjects = projects.filter(p => p.id === currentWorker.projectId);
+    let myTasks = [];
+    
+    myProjects.forEach(project => {
+        if (project.tasks) {
+            const workerTasks = project.tasks.filter(t => t.workerId === currentWorkerId).map(task => ({
+                ...task,
+                projectName: project.name,
+                projectId: project.id
+            }));
+            myTasks = myTasks.concat(workerTasks);
+        }
+    });
+    
+    const container = document.getElementById('tasksList');
+    const empty = document.getElementById('emptyTasks');
+    
+    if (myTasks.length === 0) {
+        container.innerHTML = '';
+        empty.classList.remove('d-none');
+    } else {
+        empty.classList.add('d-none');
+        renderTasks(myTasks);
+    }
+}
+
+function filterTasks() {
+    if (!currentWorker) return;
+    
+    const search = document.getElementById('searchTask').value.toLowerCase();
+    const status = document.getElementById('filterTaskStatus').value;
+    
+    const myProjects = projects.filter(p => p.id === currentWorker.projectId);
+    let myTasks = [];
+    
+    myProjects.forEach(project => {
+        if (project.tasks) {
+            const workerTasks = project.tasks.filter(t => t.workerId === currentWorkerId).map(task => ({
+                ...task,
+                projectName: project.name,
+                projectId: project.id
+            }));
+            myTasks = myTasks.concat(workerTasks);
+        }
+    });
+    
+    const filtered = myTasks.filter(task => {
+        const matchSearch = task.title.toLowerCase().includes(search) || task.description.toLowerCase().includes(search);
+        const matchStatus = !status || task.status === status;
+        return matchSearch && matchStatus;
+    });
+    
+    renderTasks(filtered);
+}
+
+function renderTasks(tasks) {
+    const container = document.getElementById('tasksList');
+    container.innerHTML = '';
+    
+    if (tasks.length === 0) {
+        container.innerHTML = '<div class="alert alert-info">No se encontraron tareas con los filtros aplicados</div>';
+        return;
+    }
+    
+    tasks.forEach(task => {
+        const card = document.createElement('div');
+        card.className = `task-item card mb-3 ${task.status === 'completed' ? 'completed' : ''}`;
+        
+        card.innerHTML = `
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <div class="flex-grow-1">
+                        <h5 class="mb-1">${task.title}</h5>
+                        <p class="text-muted mb-2">${task.description}</p>
+                        <small class="text-muted"><i class="bi bi-building me-1"></i>${task.projectName}</small>
+                    </div>
+                    <div class="d-flex gap-2">
+                        ${getTaskPriorityBadge(task.priority)}
                         ${getTaskStatusBadge(task.status)}
                     </div>
                 </div>
-            </div>
-            <div class="col-md-6">
-                <div class="card bg-light">
-                    <div class="card-body">
-                        <small class="text-muted d-block mb-1">Prioridad</small>
-                        ${getTaskPriorityBadge(task.priority)}
-                    </div>
+                <div class="d-flex justify-content-between align-items-center mt-3">
+                    <small class="text-muted">
+                        <i class="bi bi-calendar me-1"></i>Vence: ${new Date(task.deadline).toLocaleDateString('es-MX')}
+                    </small>
+                    <button class="btn btn-sm btn-primary-custom" onclick="changeTaskStatus(${task.projectId}, ${task.id})">
+                        <i class="bi bi-pencil me-1"></i>Cambiar Estado
+                    </button>
                 </div>
             </div>
-            <div class="col-md-6">
-                <div class="card bg-light">
-                    <div class="card-body">
-                        <small class="text-muted d-block mb-1">Fecha Límite</small>
-                        <strong>${new Date(task.deadline).toLocaleDateString('es-MX')}</strong>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="card bg-light">
-                    <div class="card-body">
-                        <small class="text-muted d-block mb-1">Tiempo Restante</small>
-                        <strong class="${urgencyClass}">${daysLeft >= 0 ? daysLeft + ' días' : 'Vencida'}</strong>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12">
-                <div class="card bg-light">
-                    <div class="card-body">
-                        <small class="text-muted d-block mb-1">Descripción</small>
-                        <p class="mb-0">${task.description}</p>
-                    </div>
-                </div>
-            </div>
-            ${task.status === 'completed' ? `
-            <div class="col-12">
-                <div class="alert alert-success">
-                    <i class="bi bi-check-circle-fill me-2"></i>
-                    <strong>Tarea completada</strong> el ${new Date(task.completedAt).toLocaleDateString('es-MX')}
-                </div>
-            </div>
-            ` : ''}
-        </div>
-    `;
-    
-    const btnMarkCompleted = document.getElementById('btnMarkCompleted');
-    if (task.status === 'completed') {
-        btnMarkCompleted.classList.add('d-none');
-    } else {
-        btnMarkCompleted.classList.remove('d-none');
-    }
-    
-    new bootstrap.Modal(document.getElementById('modalTaskDetail')).show();
+        `;
+        
+        container.appendChild(card);
+    });
 }
 
-function quickMarkCompleted(id) {
-    currentTaskId = id;
-    markTaskCompleted();
-}
-
-function markTaskCompleted() {
-    const task = tasks.find(t => t.id === currentTaskId);
+function changeTaskStatus(projectId, taskId) {
+    const project = projects.find(p => p.id === projectId);
+    if (!project || !project.tasks) return;
+    
+    const task = project.tasks.find(t => t.id === taskId);
     if (!task) return;
     
-    task.status = 'completed';
-    task.completedAt = new Date().toISOString();
-    
-    saveData('supervisor_tasks', tasks);
-    
-    // Cerrar modal si está abierto
-    const modal = bootstrap.Modal.getInstance(document.getElementById('modalTaskDetail'));
-    if (modal) modal.hide();
-    
-    showToast('success', '¡Completada!', 'Tarea marcada como completada');
-    updateUI();
-    filterTasks();
+    showCustomAlert(
+        '<i class="bi bi-pencil-square text-primary" style="font-size:60px"></i>',
+        'Cambiar Estado de Tarea',
+        `<div class="mb-3"><strong>${task.title}</strong></div>
+         <select class="form-select" id="newTaskStatus">
+            <option value="pending" ${task.status === 'pending' ? 'selected' : ''}>Pendiente</option>
+            <option value="in-progress" ${task.status === 'in-progress' ? 'selected' : ''}>En Progreso</option>
+            <option value="completed" ${task.status === 'completed' ? 'selected' : ''}>Completada</option>
+         </select>`,
+        [
+            { text: 'Cancelar', class: 'btn-secondary', action: closeCustomAlert },
+            { text: 'Guardar', class: 'btn-primary-custom', action: () => saveTaskStatus(projectId, taskId) }
+        ]
+    );
 }
 
+function saveTaskStatus(projectId, taskId) {
+    const newStatus = document.getElementById('newTaskStatus').value;
+    
+    const project = projects.find(p => p.id === projectId);
+    if (!project || !project.tasks) return;
+    
+    const taskIndex = project.tasks.findIndex(t => t.id === taskId);
+    if (taskIndex === -1) return;
+    
+    project.tasks[taskIndex].status = newStatus;
+    
+    saveData('constructora_projects', projects);
+    closeCustomAlert();
+    showToast('success', 'Actualizado', 'Estado de la tarea actualizado correctamente');
+    
+    updateUI();
+    
+    if (currentProjectId === projectId) {
+        viewProjectDetail(projectId);
+    }
+    
+    const currentSection = document.querySelector('.content-section:not(.d-none)').id;
+    if (currentSection === 'tasks') {
+        filterTasks();
+    }
+}
+
+// ============== REPORTAR PROBLEMA ==============
+function loadProblemProjects() {
+    if (!currentWorker) return;
+    
+    const select = document.getElementById('problemProject');
+    select.innerHTML = '<option value="">Seleccionar proyecto...</option>';
+    
+    const myProjects = projects.filter(p => p.id === currentWorker.projectId);
+    myProjects.forEach(project => {
+        select.innerHTML += `<option value="${project.id}">${project.name}</option>`;
+    });
+}
+
+function submitProblem(e) {
+    e.preventDefault();
+    
+    if (!currentWorker) {
+        showToast('error', 'Error', 'No se pudo identificar al trabajador');
+        return;
+    }
+    
+    const data = {
+        id: Date.now(),
+        workerId: currentWorkerId,
+        projectId: parseInt(document.getElementById('problemProject').value),
+        category: document.getElementById('problemCategory').value,
+        title: document.getElementById('problemTitle').value,
+        description: document.getElementById('problemDescription').value,
+        priority: document.getElementById('problemPriority').value,
+        location: document.getElementById('problemLocation').value,
+        createdAt: new Date().toISOString(),
+        read: false
+    };
+    
+    problems.push(data);
+    saveData('worker_problems', problems);
+    
+    document.getElementById('problemForm').reset();
+    showToast('success', 'Enviado', 'Tu reporte ha sido enviado al supervisor');
+    loadMyRecentProblems();
+}
+
+function loadMyRecentProblems() {
+    const container = document.getElementById('myRecentProblems');
+    const myProblems = problems.filter(p => p.workerId === currentWorkerId);
+    
+    if (myProblems.length === 0) {
+        container.innerHTML = '<p class="text-muted small text-center">No hay reportes</p>';
+        return;
+    }
+    
+    myProblems.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    
+    let html = '';
+    myProblems.slice(0, 3).forEach(problem => {
+        html += `
+            <div class="border-start border-3 border-${getPriorityColor(problem.priority)} ps-2 mb-2">
+                <small class="d-block fw-semibold">${problem.title}</small>
+                <small class="text-muted">${new Date(problem.createdAt).toLocaleDateString('es-MX')}</small>
+            </div>
+        `;
+    });
+    
+    container.innerHTML = html;
+}
+
+function getPriorityColor(priority) {
+    const colors = {
+        'low': 'info',
+        'medium': 'warning',
+        'high': 'orange',
+        'urgent': 'danger'
+    };
+    return colors[priority] || 'secondary';
+}
+
+// ============== BADGES ==============
 function getTaskStatusBadge(status) {
     const badges = {
         'pending': '<span class="badge badge-pending">Pendiente</span>',
@@ -881,146 +1057,6 @@ function getTaskPriorityBadge(priority) {
         'urgent': '<span class="badge badge-urgent">Urgente</span>'
     };
     return badges[priority] || badges.medium;
-}
-
-// ============== REPORTAR PROBLEMAS ==============
-function saveProblem(e) {
-    e.preventDefault();
-    
-    const data = {
-        id: Date.now(),
-        workerId: currentWorkerId,
-        projectId: null, // Se puede obtener del trabajador si está asignado a un proyecto
-        title: document.getElementById('problemTitle').value,
-        category: document.getElementById('problemCategory').value,
-        priority: document.getElementById('problemPriority').value,
-        location: document.getElementById('problemLocation').value,
-        description: document.getElementById('problemDescription').value,
-        status: 'pending',
-        createdAt: new Date().toISOString(),
-        read: false
-    };
-    
-    problems.push(data);
-    saveData('worker_problems', problems);
-    
-    // Agregar a notificaciones globales para que supervisor y admin lo vean
-    let notifications = JSON.parse(localStorage.getItem('constructora_notifications')) || [];
-    const notification = {
-        id: Date.now() + 1,
-        workerId: currentWorkerId,
-        projectId: data.projectId,
-        type: 'problem',
-        title: '🚨 Problema Reportado',
-        message: `Problema: "${data.title}" - ${data.description.substring(0, 100)}${data.description.length > 100 ? '...' : ''}`,
-        date: new Date().toISOString(),
-        read: false
-    };
-    notifications.push(notification);
-    localStorage.setItem('constructora_notifications', JSON.stringify(notifications));
-    
-    document.getElementById('problemForm').reset();
-    showToast('success', 'Enviado', 'Problema reportado correctamente. El supervisor será notificado.');
-    updateUI();
-    
-    // Mostrar alerta de confirmación
-    setTimeout(() => {
-        showCustomAlert(
-            '<i class="bi bi-check-circle-fill text-success" style="font-size:60px"></i>',
-            '¡Reporte Enviado!',
-            'Tu reporte ha sido enviado al supervisor y administrador. Recibirás actualizaciones sobre su estado.',
-            [
-                { text: 'Ver Mis Reportes', class: 'btn-primary-custom', action: () => { closeCustomAlert(); showSection('my-reports'); } },
-                { text: 'Cerrar', class: 'btn-secondary', action: closeCustomAlert }
-            ]
-        );
-    }, 500);
-}
-
-// ============== MIS REPORTES ==============
-function loadReports() {
-    filterReports();
-}
-
-function filterReports() {
-    const search = document.getElementById('searchReport').value.toLowerCase();
-    const status = document.getElementById('filterReportStatus').value;
-    
-    const myReports = problems.filter(p => p.workerId === currentWorkerId);
-    
-    const filtered = myReports.filter(r => {
-        const matchSearch = r.title.toLowerCase().includes(search) || r.description.toLowerCase().includes(search);
-        const matchStatus = !status || r.status === status;
-        return matchSearch && matchStatus;
-    });
-    
-    const container = document.getElementById('reportsList');
-    const empty = document.getElementById('emptyReports');
-    
-    if (filtered.length === 0) {
-        container.innerHTML = '';
-        empty.classList.remove('d-none');
-    } else {
-        empty.classList.add('d-none');
-        container.innerHTML = '';
-        
-        filtered.forEach(report => {
-            const card = document.createElement('div');
-            card.className = `problem-card card shadow-sm mb-3 ${report.status === 'resolved' ? 'resolved' : ''}`;
-            
-            const statusColor = report.status === 'resolved' ? 'success' : report.status === 'in-progress' ? 'warning' : 'danger';
-            const statusText = report.status === 'resolved' ? 'Resuelto' : report.status === 'in-progress' ? 'En Proceso' : 'Pendiente';
-            
-            card.innerHTML = `
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-start mb-2">
-                        <h6 class="mb-0">${report.title}</h6>
-                        <span class="badge bg-${statusColor}">${statusText}</span>
-                    </div>
-                    <p class="text-muted small mb-2">${report.description}</p>
-                    <div class="d-flex gap-2 flex-wrap mb-2">
-                        ${getCategoryBadge(report.category)}
-                        ${getTaskPriorityBadge(report.priority)}
-                        ${report.location ? `<span class="badge bg-secondary"><i class="bi bi-geo-alt me-1"></i>${report.location}</span>` : ''}
-                    </div>
-                    <div class="d-flex justify-content-between align-items-center">
-                        <small class="text-muted">
-                            <i class="bi bi-calendar me-1"></i>Reportado: ${new Date(report.createdAt).toLocaleDateString('es-MX')}
-                        </small>
-                        ${report.notes ? `
-                        <button class="btn btn-sm btn-outline-info" onclick="viewReportNotes('${report.notes}')">
-                            <i class="bi bi-chat-left-text me-1"></i>Ver respuesta
-                        </button>
-                        ` : ''}
-                    </div>
-                </div>
-            `;
-            
-            container.appendChild(card);
-        });
-    }
-}
-
-function getCategoryBadge(category) {
-    const badges = {
-        'materiales': '<span class="badge badge-materiales">Materiales</span>',
-        'herramientas': '<span class="badge badge-herramientas">Herramientas</span>',
-        'seguridad': '<span class="badge badge-seguridad">Seguridad</span>',
-        'calidad': '<span class="badge badge-calidad">Calidad</span>',
-        'otro': '<span class="badge badge-otro">Otro</span>'
-    };
-    return badges[category] || badges.otro;
-}
-
-function viewReportNotes(notes) {
-    showCustomAlert(
-        '<i class="bi bi-chat-left-text text-info" style="font-size:60px"></i>',
-        'Respuesta del Supervisor',
-        notes,
-        [
-            { text: 'Cerrar', class: 'btn-secondary', action: closeCustomAlert }
-        ]
-    );
 }
 
 // ============== UTILIDADES ==============
