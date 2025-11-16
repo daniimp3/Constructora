@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Login - Constructora</title>
+    <title>Login - Recursamos S.A.</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -111,8 +111,8 @@
 
         .logo-text {
             color: #cdd7df;
-            font-size: 12px;
-            font-weight: 300;
+            font-size: 16px;
+            font-weight: 500;
             margin-top: 10px;
         }
 
@@ -145,26 +145,6 @@
             line-height: 1.8;
             color: #cdd7df;
             margin-bottom: 30px;
-        }
-
-        .learn-more-btn {
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(10px);
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            color: white;
-            padding: 12px 35px;
-            border-radius: 25px;
-            font-weight: 600;
-            transition: all 0.3s;
-            text-decoration: none;
-            display: inline-block;
-        }
-
-        .learn-more-btn:hover {
-            background: rgba(255, 255, 255, 0.25);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
-            color: white;
         }
 
         /* ========== PANEL DERECHO ========== */
@@ -231,6 +211,10 @@
             color: #8aa7bc;
         }
 
+        .form-input.is-invalid {
+            border-color: #dc3545;
+        }
+
         .password-wrapper {
             position: relative;
         }
@@ -270,37 +254,10 @@
             cursor: not-allowed;
         }
 
-        .social-icons {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-top: 30px;
-        }
-
-        .social-icon {
-            width: 45px;
-            height: 45px;
-            background: rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #0d273d;
-            font-size: 20px;
-            transition: all 0.3s;
-            cursor: pointer;
-        }
-
-        .social-icon:hover {
-            background: rgba(255, 255, 255, 0.5);
-            transform: translateY(-3px);
-        }
-
         .alert {
             border-radius: 12px;
             padding: 12px 20px;
             margin-bottom: 20px;
-            display: none;
             animation: fadeIn 0.3s;
         }
 
@@ -351,12 +308,9 @@
         <div class="left-panel">
             <div class="logo-section">
                 <div class="logo-placeholder">
-                    
-                     <img src="{{ asset('img/logo.png') }}" alt="Logo"> 
-                    
-            
+                    <img src="{{ asset('img/logo.png') }}" alt="Logo Recursamos">
                 </div>
-                <div class="logo-text">EL LOGO AQI</div>
+                <div class="logo-text">RECURSAMOS S.A.</div>
             </div>
 
             <div class="welcome-content">
@@ -367,7 +321,6 @@
                     Controla tus proyectos, presupuestos y equipo de trabajo 
                     de manera eficiente y profesional.
                 </p>
-                
             </div>
         </div>
 
@@ -376,24 +329,44 @@
             <div class="login-box">
                 <h2 class="signin-title">Iniciar Sesión</h2>
 
-                <!-- Alerta de error -->
-                <div class="alert alert-danger" id="errorAlert">
+                <!-- Alertas de Laravel -->
+                @if ($errors->any())
+                    <div class="alert alert-danger">
+                        <i class="bi bi-exclamation-circle me-2"></i>
+                        <span>{{ $errors->first() }}</span>
+                    </div>
+                @endif
+
+                @if (session('status'))
+                    <div class="alert alert-success">
+                        <i class="bi bi-check-circle me-2"></i>
+                        <span>{{ session('status') }}</span>
+                    </div>
+                @endif
+
+                <!-- Alerta de error dinámica -->
+                <div class="alert alert-danger d-none" id="errorAlert">
                     <i class="bi bi-exclamation-circle me-2"></i>
                     <span id="errorMessage"></span>
                 </div>
 
                 <!-- Formulario -->
-                <form id="loginForm">
+                <form id="loginForm" method="POST" action="{{ route('login') }}">
+                    @csrf
+                    
                     <!-- Email -->
                     <div class="form-group">
                         <label class="form-label">Correo Electrónico</label>
                         <input 
                             type="email" 
-                            class="form-input" 
-                            id="email" 
+                            class="form-input @error('email') is-invalid @enderror" 
+                            id="email"
+                            name="email"
+                            value="{{ old('email') }}"
                             placeholder="usuario@ejemplo.com" 
                             required
                             autocomplete="email"
+                            autofocus
                         >
                     </div>
 
@@ -403,8 +376,9 @@
                         <div class="password-wrapper">
                             <input 
                                 type="password" 
-                                class="form-input" 
-                                id="password" 
+                                class="form-input @error('password') is-invalid @enderror" 
+                                id="password"
+                                name="password"
                                 placeholder="••••••••" 
                                 required
                                 autocomplete="current-password"
@@ -422,8 +396,6 @@
                         </span>
                     </button>
                 </form>
-
-                
             </div>
         </div>
     </div>
@@ -434,12 +406,14 @@
         const togglePassword = document.getElementById('togglePassword');
         const passwordInput = document.getElementById('password');
 
-        togglePassword.addEventListener('click', function() {
-            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-            passwordInput.setAttribute('type', type);
-            this.classList.toggle('bi-eye');
-            this.classList.toggle('bi-eye-slash');
-        });
+        if (togglePassword) {
+            togglePassword.addEventListener('click', function() {
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+                this.classList.toggle('bi-eye');
+                this.classList.toggle('bi-eye-slash');
+            });
+        }
 
         // Login form
         const loginForm = document.getElementById('loginForm');
@@ -455,32 +429,33 @@
             loginBtn.disabled = true;
             btnText.classList.add('d-none');
             btnSpinner.classList.remove('d-none');
-            errorAlert.style.display = 'none';
+            errorAlert.classList.add('d-none');
 
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
+            const formData = new FormData(loginForm);
             const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
             try {
-                const response = await fetch('/login', {
+                const response = await fetch('{{ route("login") }}', {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json',
                         'X-CSRF-TOKEN': csrfToken,
                         'Accept': 'application/json'
                     },
-                    body: JSON.stringify({ email, password })
+                    body: formData
                 });
 
                 const data = await response.json();
 
-                if (data.success) {
+                if (response.ok && data.success) {
+                    // Redirigir al dashboard correspondiente
                     window.location.href = data.redirect;
                 } else {
-                    showError(data.message || 'Credenciales incorrectas');
+                    // Mostrar error
+                    showError(data.message || 'Las credenciales proporcionadas son incorrectas.');
                     resetButton();
                 }
             } catch (error) {
+                console.error('Error:', error);
                 showError('Error de conexión. Intenta nuevamente.');
                 resetButton();
             }
@@ -488,7 +463,7 @@
 
         function showError(message) {
             errorMessage.textContent = message;
-            errorAlert.style.display = 'block';
+            errorAlert.classList.remove('d-none');
         }
 
         function resetButton() {
@@ -497,6 +472,7 @@
             btnSpinner.classList.add('d-none');
         }
 
+        // Focus en el email al cargar
         document.getElementById('email').focus();
     </script>
 </body>
