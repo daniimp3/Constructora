@@ -79,8 +79,8 @@
         }
 
         .logo-placeholder {
-            width: 120px;
-            height: 120px;
+            width: 180px;
+            height: 180px;
             background: rgba(255, 255, 255, 0.15);
             backdrop-filter: blur(10px);
             border-radius: 25px;
@@ -99,13 +99,13 @@
         }
 
         @keyframes pulse {
-            0%, 100% { box-shadow: 0 0 20px rgba(138, 167, 188, 0.5); }
-            50% { box-shadow: 0 0 40px rgba(138, 167, 188, 0.8); }
+            0%, 100% { box-shadow: 0 0 20px rgba(172, 179, 184, 0.5); }
+            50% { box-shadow: 0 0 40px rgba(131, 146, 156, 0.8); }
         }
 
         .logo-placeholder img {
-            max-width: 90%;
-            max-height: 90%;
+            max-width: 100%;
+            max-height: 100%;
             object-fit: contain;
         }
 
@@ -266,6 +266,12 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
+        .spinner-border-sm {
+            width: 1rem;
+            height: 1rem;
+            border-width: 0.15em;
+        }
+
         /* ========== RESPONSIVE ========== */
         @media (max-width: 968px) {
             .login-wrapper {
@@ -308,9 +314,9 @@
         <div class="left-panel">
             <div class="logo-section">
                 <div class="logo-placeholder">
-                    <img src="{{ asset('img/logo.png') }}" alt="Logo Recursamos">
+                    <img src="{{ asset('img/logoR.png') }}" alt="Logo Recursamos">
                 </div>
-                <div class="logo-text">RECURSAMOS S.A.</div>
+                <div class="logo-text"></div>
             </div>
 
             <div class="welcome-content">
@@ -343,12 +349,6 @@
                         <span>{{ session('status') }}</span>
                     </div>
                 @endif
-
-                <!-- Alerta de error dinámica -->
-                <div class="alert alert-danger d-none" id="errorAlert">
-                    <i class="bi bi-exclamation-circle me-2"></i>
-                    <span id="errorMessage"></span>
-                </div>
 
                 <!-- Formulario -->
                 <form id="loginForm" method="POST" action="{{ route('login') }}">
@@ -402,7 +402,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Toggle password
+        // Toggle password visibility
         const togglePassword = document.getElementById('togglePassword');
         const passwordInput = document.getElementById('password');
 
@@ -415,64 +415,23 @@
             });
         }
 
-        // Login form
+        // Login form - MÉTODO TRADICIONAL (sin fetch API)
         const loginForm = document.getElementById('loginForm');
         const loginBtn = document.getElementById('loginBtn');
         const btnText = document.getElementById('btnText');
         const btnSpinner = document.getElementById('btnSpinner');
-        const errorAlert = document.getElementById('errorAlert');
-        const errorMessage = document.getElementById('errorMessage');
 
-        loginForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
+        loginForm.addEventListener('submit', function(e) {
+            // Mostrar spinner mientras se procesa
             loginBtn.disabled = true;
             btnText.classList.add('d-none');
             btnSpinner.classList.remove('d-none');
-            errorAlert.classList.add('d-none');
-
-            const formData = new FormData(loginForm);
-            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-
-            try {
-                const response = await fetch('{{ route("login") }}', {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': csrfToken,
-                        'Accept': 'application/json'
-                    },
-                    body: formData
-                });
-
-                const data = await response.json();
-
-                if (response.ok && data.success) {
-                    // Redirigir al dashboard correspondiente
-                    window.location.href = data.redirect;
-                } else {
-                    // Mostrar error
-                    showError(data.message || 'Las credenciales proporcionadas son incorrectas.');
-                    resetButton();
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                showError('Error de conexión. Intenta nuevamente.');
-                resetButton();
-            }
+            
+            // Dejar que el formulario se envíe normalmente
+            // Laravel manejará automáticamente el CSRF token
         });
 
-        function showError(message) {
-            errorMessage.textContent = message;
-            errorAlert.classList.remove('d-none');
-        }
-
-        function resetButton() {
-            loginBtn.disabled = false;
-            btnText.classList.remove('d-none');
-            btnSpinner.classList.add('d-none');
-        }
-
-        // Focus en el email al cargar
+        // Focus automático en el campo email
         document.getElementById('email').focus();
     </script>
 </body>
